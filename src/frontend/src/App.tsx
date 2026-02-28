@@ -1,12 +1,17 @@
-import {
-  createRouter,
-  createRoute,
-  createRootRoute,
-  RouterProvider,
-  Outlet,
-} from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import {
+  Outlet,
+  RouterProvider,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
+import DeveloperDocsPage from "./pages/DeveloperDocsPage";
+import EcosystemDirectoryPage from "./pages/EcosystemDirectoryPage";
+import FeaturedAppsPage from "./pages/FeaturedAppsPage";
 import IdentityPrototypePage from "./pages/IdentityPrototypePage";
+import IntegrationGuidePage from "./pages/IntegrationGuidePage";
+import WalletPage from "./pages/WalletPage";
 
 // ── Root route ────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({
@@ -25,8 +30,50 @@ const indexRoute = createRoute({
   component: IdentityPrototypePage,
 });
 
+// ── Ecosystem Directory page (/ecosystem) ─────────────────────────────────────
+const ecosystemRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ecosystem",
+  component: EcosystemDirectoryPage,
+});
+
+// ── Wallet page (/wallet) ─────────────────────────────────────────────────────
+const walletRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/wallet",
+  component: WalletPage,
+});
+
+// ── Integration Guide page (/integration) ─────────────────────────────────────
+const integrationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/integration",
+  component: IntegrationGuidePage,
+});
+
+// ── Developer Docs page (/developer) ──────────────────────────────────────────
+const developerRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/developer",
+  component: DeveloperDocsPage,
+});
+
+// ── Featured Apps page (/featured-apps) ───────────────────────────────────────
+const featuredAppsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/featured-apps",
+  component: FeaturedAppsPage,
+});
+
 // ── Router ────────────────────────────────────────────────────────────────────
-const routeTree = rootRoute.addChildren([indexRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  ecosystemRoute,
+  walletRoute,
+  integrationRoute,
+  developerRoute,
+  featuredAppsRoute,
+]);
 
 const router = createRouter({ routeTree });
 

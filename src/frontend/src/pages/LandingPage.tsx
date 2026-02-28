@@ -1,14 +1,14 @@
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 import {
-  LinkIcon,
-  BarChart3,
-  Share2,
-  Zap,
   ArrowRight,
+  BarChart3,
   Check,
-  User,
+  LinkIcon,
   MousePointerClick,
+  Share2,
+  User,
+  Zap,
 } from "lucide-react";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 
@@ -31,9 +31,24 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", icon: User, title: "Daftar & Login", desc: "Masuk dengan Internet Identity — aman dan tanpa kata sandi." },
-  { num: "02", icon: LinkIcon, title: "Buat Link Referral", desc: "Isi URL tujuan dan kode referral kamu, atau biarkan sistem generate otomatis." },
-  { num: "03", icon: MousePointerClick, title: "Bagikan & Pantau", desc: "Salin link dan sebar ke mana saja. Lihat jumlah klik bertambah." },
+  {
+    num: "01",
+    icon: User,
+    title: "Daftar & Login",
+    desc: "Masuk dengan Internet Identity — aman dan tanpa kata sandi.",
+  },
+  {
+    num: "02",
+    icon: LinkIcon,
+    title: "Buat Link Referral",
+    desc: "Isi URL tujuan dan kode referral kamu, atau biarkan sistem generate otomatis.",
+  },
+  {
+    num: "03",
+    icon: MousePointerClick,
+    title: "Bagikan & Pantau",
+    desc: "Salin link dan sebar ke mana saja. Lihat jumlah klik bertambah.",
+  },
 ];
 
 export default function LandingPage() {
@@ -54,7 +69,10 @@ export default function LandingPage() {
         </div>
         {identity ? (
           <Link to="/">
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-600">
+            <Button
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-600"
+            >
               Dashboard <ArrowRight className="ml-1 w-3.5 h-3.5" />
             </Button>
           </Link>
@@ -170,7 +188,9 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5">
                   <f.icon className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-display font-600 text-xl mb-2">{f.title}</h3>
+                <h3 className="font-display font-600 text-xl mb-2">
+                  {f.title}
+                </h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
                   {f.desc}
                 </p>
@@ -200,7 +220,10 @@ export default function LandingPage() {
             />
 
             {STEPS.map((step, i) => (
-              <div key={step.num} className="flex flex-col items-center text-center gap-4">
+              <div
+                key={step.num}
+                className="flex flex-col items-center text-center gap-4"
+              >
                 <div className="relative">
                   <div className="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center shadow-glow">
                     <step.icon className="w-6 h-6 text-primary-foreground" />
@@ -244,8 +267,15 @@ export default function LandingPage() {
               Daftar gratis, tidak perlu kartu kredit.
             </p>
             <ul className="flex flex-col sm:flex-row justify-center gap-3 mb-8 relative">
-              {["Gratis selamanya", "Tanpa limit link", "Real-time analytics"].map((t) => (
-                <li key={t} className="flex items-center gap-1.5 text-primary-foreground/90 text-sm">
+              {[
+                "Gratis selamanya",
+                "Tanpa limit link",
+                "Real-time analytics",
+              ].map((t) => (
+                <li
+                  key={t}
+                  className="flex items-center gap-1.5 text-primary-foreground/90 text-sm"
+                >
                   <Check className="w-4 h-4" /> {t}
                 </li>
               ))}
@@ -258,9 +288,16 @@ export default function LandingPage() {
               asChild={!!identity}
             >
               {identity ? (
-                <Link to="/">Buka Dashboard <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                <Link to="/">
+                  Buka Dashboard <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
               ) : (
-                <span>{isLoggingIn ? "Masuk..." : "Mulai Gratis"} {!isLoggingIn && <ArrowRight className="ml-2 w-4 h-4 inline" />}</span>
+                <span>
+                  {isLoggingIn ? "Masuk..." : "Mulai Gratis"}{" "}
+                  {!isLoggingIn && (
+                    <ArrowRight className="ml-2 w-4 h-4 inline" />
+                  )}
+                </span>
               )}
             </Button>
           </div>
@@ -274,11 +311,12 @@ export default function LandingPage() {
             <div className="w-6 h-6 rounded-md gradient-brand flex items-center justify-center">
               <LinkIcon className="w-3 h-3 text-primary-foreground" />
             </div>
-            <span className="font-display font-600 text-foreground">RefHub</span>
+            <span className="font-display font-600 text-foreground">
+              RefHub
+            </span>
           </div>
           <p>
-            © 2026. Built with{" "}
-            <span className="text-primary">♥</span> using{" "}
+            © 2026. Built with <span className="text-primary">♥</span> using{" "}
             <a
               href="https://caffeine.ai"
               target="_blank"

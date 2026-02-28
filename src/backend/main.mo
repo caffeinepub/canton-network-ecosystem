@@ -6,9 +6,12 @@ import Time "mo:core/Time";
 import Order "mo:core/Order";
 import Char "mo:core/Char";
 import Text "mo:core/Text";
-
+import Nat "mo:core/Nat";
+import Iter "mo:core/Iter";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
+
+
 
 actor {
   // Types
@@ -26,10 +29,22 @@ actor {
     name : Text;
   };
 
+  public type Transaction = {
+    id : Nat;
+    from : Principal;
+    to : Principal;
+    amount : Nat;
+    timestamp : Time.Time;
+    note : ?Text;
+  };
+
   var nextId = 1;
   let links = Map.empty<Text, ReferralLink>();
-  let linksByOwner = Map.empty<Principal, List.List<Text>>();
+  let linksByOwner = Map.empty<Principal, [Text]>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let balances = Map.empty<Principal, Nat>();
+  let transactions = Map.empty<Nat, Transaction>();
+  var nextTransactionId = 1;
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
@@ -82,7 +97,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Public Functions
+  // Referral Link Functions
   public shared ({ caller }) func buatLink(kode : Text, urlTujuan : Text, deskripsi : ?Text) : async ReferralLink {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can perform this action");
@@ -111,12 +126,12 @@ actor {
 
     let existingLinks = linksByOwner.get(caller);
     switch (existingLinks) {
-      case (?list) {
-        list.add(kode);
+      case (?codes) {
+        let newCodes = codes.concat([kode]);
+        linksByOwner.add(caller, newCodes);
       };
       case (null) {
-        let newList = List.fromArray([kode]);
-        linksByOwner.add(caller, newList);
+        linksByOwner.add(caller, [kode]);
       };
     };
 
@@ -137,8 +152,8 @@ actor {
     };
 
     switch (linksByOwner.get(owner)) {
-      case (?linkList) {
-        linkList.toArray().map(
+      case (?linkCodes) {
+        linkCodes.map(
           func(kode) {
             switch (links.get(kode)) {
               case (?link) { link };
@@ -157,8 +172,8 @@ actor {
     };
 
     switch (linksByOwner.get(caller)) {
-      case (?linkList) {
-        linkList.toArray().map(
+      case (?linkCodes) {
+        linkCodes.map(
           func(kode) {
             switch (links.get(kode)) {
               case (?link) { link };
@@ -206,13 +221,13 @@ actor {
         links.remove(kode);
 
         switch (linksByOwner.get(caller)) {
-          case (?linkList) {
-            let filteredList = linkList.filter(
+          case (?linkCodes) {
+            let filteredCodes = linkCodes.filter(
               func(existingKode) {
                 existingKode != kode;
               }
             );
-            linksByOwner.add(caller, filteredList);
+            linksByOwner.add(caller, filteredCodes);
           };
           case (null) {};
         };
@@ -246,5 +261,109 @@ actor {
       };
       case (null) { Runtime.trap("Link not found") };
     };
+  };
+
+  // Wallet and Transaction Functions
+  public shared ({ caller }) func sendCC(to : Principal, amount : Nat, note : ?Text) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can perform this action");
+    };
+
+    if (to == caller) {
+      Runtime.trap("Cannot send CC to yourself");
+    };
+
+    let fromBalance = switch (balances.get(caller)) {
+      case (?balance) { balance };
+      case (null) { 0 };
+    };
+
+    if (fromBalance < amount) {
+      Runtime.trap("Insufficient balance");
+    };
+
+    if (amount < 1) {
+      Runtime.trap("Minimum transfer is 1 CC");
+    };
+
+    // Update balances
+    balances.add(caller, fromBalance - amount);
+
+    let toBalance = switch (balances.get(to)) {
+      case (?balance) { balance };
+      case (null) { 0 };
+    };
+
+    balances.add(to, toBalance + amount);
+
+    // Record transaction
+    let transaction : Transaction = {
+      id = nextTransactionId;
+      from = caller;
+      to;
+      amount;
+      timestamp = Time.now();
+      note;
+    };
+    transactions.add(nextTransactionId, transaction);
+    nextTransactionId += 1;
+  };
+
+  public query ({ caller }) func getCCBalance() : async Nat {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can perform this action");
+    };
+    switch (balances.get(caller)) {
+      case (?balance) { balance };
+      case (null) { 0 };
+    };
+  };
+
+  public query ({ caller }) func getCCTransactionHistory(_principal : ?Principal) : async [Transaction] {
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only users can perform this action");
+    };
+
+    let principal = switch (_principal) {
+      case (null) { caller };
+      case (?p) { p };
+    };
+
+    // Authorization check: can only view own transactions unless admin
+    if (caller != principal and not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Can only view your own transaction history");
+    };
+
+    // Filter transactions where the principal is sender or receiver
+    let filtered = transactions.values().toArray().filter(
+      func(tx) {
+        tx.from == principal or tx.to == principal;
+      }
+    );
+    filtered;
+  };
+
+  public shared ({ caller }) func adminMintCC(to : Principal, amount : Nat, note : ?Text) : async () {
+    if (not AccessControl.hasPermission(accessControlState, caller, #admin)) {
+      Runtime.trap("Unauthorized: Only admins can mint CC tokens");
+    };
+
+    let currentBalance = switch (balances.get(to)) {
+      case (?balance) { balance };
+      case (null) { 0 };
+    };
+
+    balances.add(to, currentBalance + amount);
+
+    let transaction : Transaction = {
+      id = nextTransactionId;
+      from = caller;
+      to;
+      amount;
+      timestamp = Time.now();
+      note;
+    };
+    transactions.add(nextTransactionId, transaction);
+    nextTransactionId += 1;
   };
 };

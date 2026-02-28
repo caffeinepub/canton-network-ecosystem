@@ -1,32 +1,32 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Plus,
-  LinkIcon,
-  BarChart3,
-  MousePointerClick,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import {
-  useGetLinksByCurrentUser,
-  useGetCallerUserProfile,
-} from "../hooks/useQueries";
+  BarChart3,
+  ChevronDown,
+  LinkIcon,
+  LogOut,
+  MousePointerClick,
+  Plus,
+} from "lucide-react";
+import { useState } from "react";
+import type { ReferralLink } from "../backend.d";
 import CreateLinkModal from "../components/CreateLinkModal";
 import EditLinkModal from "../components/EditLinkModal";
 import LinkCard from "../components/LinkCard";
 import ProfileSetupModal from "../components/ProfileSetupModal";
-import type { ReferralLink } from "../backend.d";
+import { useInternetIdentity } from "../hooks/useInternetIdentity";
+import {
+  useGetCallerUserProfile,
+  useGetLinksByCurrentUser,
+} from "../hooks/useQueries";
 
 function StatCard({
   icon: Icon,
@@ -73,10 +73,8 @@ export default function DashboardPage() {
   const showProfileSetup =
     isAuthenticated && !profileLoading && profileFetched && profile === null;
 
-  const totalKlik = links?.reduce(
-    (sum, l) => sum + Number(l.jumlahKlik),
-    0
-  ) ?? 0;
+  const totalKlik =
+    links?.reduce((sum, l) => sum + Number(l.jumlahKlik), 0) ?? 0;
 
   const handleLogout = async () => {
     await clear();
@@ -84,7 +82,9 @@ export default function DashboardPage() {
   };
 
   const userInitial =
-    profile?.name?.charAt(0).toUpperCase() ?? identity?.getPrincipal().toString().charAt(0).toUpperCase() ?? "U";
+    profile?.name?.charAt(0).toUpperCase() ??
+    identity?.getPrincipal().toString().charAt(0).toUpperCase() ??
+    "U";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -110,7 +110,7 @@ export default function DashboardPage() {
                   {userInitial}
                 </div>
                 <span className="text-sm hidden sm:inline">
-                  {profileLoading ? "..." : profile?.name ?? "Pengguna"}
+                  {profileLoading ? "..." : (profile?.name ?? "Pengguna")}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
               </Button>
@@ -193,7 +193,8 @@ export default function DashboardPage() {
                 Belum ada link
               </h3>
               <p className="text-muted-foreground text-sm max-w-xs mb-6">
-                Buat link referral pertama kamu dan mulai bagikan ke orang-orang!
+                Buat link referral pertama kamu dan mulai bagikan ke
+                orang-orang!
               </p>
               <Button
                 onClick={() => setCreateOpen(true)}
@@ -216,8 +217,7 @@ export default function DashboardPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-border py-5 px-6 md:px-8">
         <div className="max-w-5xl mx-auto text-center text-xs text-muted-foreground">
-          © 2026. Built with{" "}
-          <span className="text-primary">♥</span> using{" "}
+          © 2026. Built with <span className="text-primary">♥</span> using{" "}
           <a
             href="https://caffeine.ai"
             target="_blank"
@@ -236,10 +236,7 @@ export default function DashboardPage() {
         open={!!editLink}
         onOpenChange={(open) => !open && setEditLink(null)}
       />
-      <ProfileSetupModal
-        open={showProfileSetup}
-        onComplete={() => {}}
-      />
+      <ProfileSetupModal open={showProfileSetup} onComplete={() => {}} />
     </div>
   );
 }

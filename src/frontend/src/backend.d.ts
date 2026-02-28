@@ -7,10 +7,6 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export type Time = bigint;
-export interface UserProfile {
-    name: string;
-}
 export interface ReferralLink {
     id: bigint;
     tanggalDibuat: Time;
@@ -20,14 +16,29 @@ export interface ReferralLink {
     urlTujuan: string;
     jumlahKlik: bigint;
 }
+export type Time = bigint;
+export interface UserProfile {
+    name: string;
+}
+export interface Transaction {
+    id: bigint;
+    to: Principal;
+    from: Principal;
+    note?: string;
+    timestamp: Time;
+    amount: bigint;
+}
 export enum UserRole {
     admin = "admin",
     user = "user",
     guest = "guest"
 }
 export interface backendInterface {
+    adminMintCC(to: Principal, amount: bigint, note: string | null): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     buatLink(kode: string, urlTujuan: string, deskripsi: string | null): Promise<ReferralLink>;
+    getCCBalance(): Promise<bigint>;
+    getCCTransactionHistory(_principal: Principal | null): Promise<Array<Transaction>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getKodeLink(kode: string): Promise<ReferralLink>;
@@ -39,5 +50,6 @@ export interface backendInterface {
     isCallerAdmin(): Promise<boolean>;
     redirectLinkAndCount(kode: string): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    sendCC(to: Principal, amount: bigint, note: string | null): Promise<void>;
     updateLinkData(kode: string, newUrlTujuan: string | null, newDeskripsi: string | null): Promise<ReferralLink>;
 }

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "@tanstack/react-router";
-import { Loader2, LinkIcon, AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link, useParams } from "@tanstack/react-router";
+import { AlertCircle, ArrowLeft, LinkIcon, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useActor } from "../hooks/useActor";
 
 type RedirectState = "loading" | "redirecting" | "error";
@@ -31,13 +31,14 @@ export default function RedirectPage() {
       } catch (err: unknown) {
         if (cancelled) return;
         const msg = err instanceof Error ? err.message : String(err);
-        const isNotFound = msg.toLowerCase().includes("not found") ||
+        const isNotFound =
+          msg.toLowerCase().includes("not found") ||
           msg.toLowerCase().includes("tidak ditemukan") ||
           msg.toLowerCase().includes("does not exist");
         setErrorMessage(
           isNotFound
             ? `Link dengan kode "${kode}" tidak ditemukan.`
-            : "Terjadi kesalahan saat memproses link ini."
+            : "Terjadi kesalahan saat memproses link ini.",
         );
         setState("error");
       }
@@ -72,7 +73,7 @@ export default function RedirectPage() {
             <p className="text-muted-foreground text-sm">
               {state === "redirecting"
                 ? "Kamu akan segera diarahkan ke tujuan."
-                : `Memvalidasi link `}
+                : "Memvalidasi link "}
               {state === "loading" && (
                 <span className="font-mono-dm text-foreground">/{kode}</span>
               )}
@@ -97,7 +98,10 @@ export default function RedirectPage() {
               Link Tidak Ditemukan
             </h1>
             <p className="text-muted-foreground text-sm mb-8">{errorMessage}</p>
-            <Button asChild className="gradient-brand text-primary-foreground font-display font-600">
+            <Button
+              asChild
+              className="gradient-brand text-primary-foreground font-display font-600"
+            >
               <Link to="/">
                 <ArrowLeft className="mr-2 w-4 h-4" />
                 Kembali ke Beranda

@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, User } from "lucide-react";
-import { useSaveCallerUserProfile } from "../hooks/useQueries";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useSaveCallerUserProfile } from "../hooks/useQueries";
 
 interface ProfileSetupModalProps {
   open: boolean;
@@ -43,7 +43,7 @@ export default function ProfileSetupModal({
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-sm" showCloseButton={false}>
+      <DialogContent className="sm:max-w-sm" showCloseButton={false}>
         <DialogHeader>
           <div className="w-12 h-12 rounded-2xl gradient-brand flex items-center justify-center mx-auto mb-3">
             <User className="w-6 h-6 text-primary-foreground" />

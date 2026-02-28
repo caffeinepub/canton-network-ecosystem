@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Shuffle } from "lucide-react";
-import { useBuatLink } from "../hooks/useQueries";
+import { useState } from "react";
 import { toast } from "sonner";
+import { useBuatLink } from "../hooks/useQueries";
 
 interface CreateLinkModalProps {
   open: boolean;
@@ -21,8 +21,9 @@ interface CreateLinkModalProps {
 
 function generateRandomCode(length = 6): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  return Array.from({ length }, () =>
-    chars[Math.floor(Math.random() * chars.length)]
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)],
   ).join("");
 }
 
@@ -86,10 +87,13 @@ export default function CreateLinkModal({
       toast.success("Link referral berhasil dibuat!");
       handleClose();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Gagal membuat link.";
-      toast.error(message.includes("already") || message.includes("kode")
-        ? "Kode sudah digunakan. Coba kode lain."
-        : "Gagal membuat link. Coba lagi.");
+      const message =
+        err instanceof Error ? err.message : "Gagal membuat link.";
+      toast.error(
+        message.includes("already") || message.includes("kode")
+          ? "Kode sudah digunakan. Coba kode lain."
+          : "Gagal membuat link. Coba lagi.",
+      );
     }
   };
 
@@ -136,7 +140,9 @@ export default function CreateLinkModal({
           <div className="space-y-1.5">
             <Label htmlFor="kode" className="font-500">
               Kode Referral{" "}
-              <span className="text-muted-foreground text-xs">(opsional — auto generate jika kosong)</span>
+              <span className="text-muted-foreground text-xs">
+                (opsional — auto generate jika kosong)
+              </span>
             </Label>
             <div className="flex gap-2">
               <Input

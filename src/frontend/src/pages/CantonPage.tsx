@@ -1,26 +1,26 @@
-import { useEffect, useRef, useState, useMemo } from "react";
 import {
+  ArrowRight,
   Building2,
+  CheckCircle2,
+  ChevronDown,
+  Code2,
+  ExternalLink,
   Globe,
   HardDrive,
+  Hexagon,
+  Info,
+  Lock,
+  Network,
+  Search,
+  Send,
   Shield,
   ShieldCheck,
   TrendingUp,
-  Wallet,
-  Code2,
-  ChevronDown,
-  ExternalLink,
-  ArrowRight,
-  Hexagon,
-  Network,
-  Lock,
-  Search,
-  X,
-  Info,
-  Send,
   Users,
-  CheckCircle2,
+  Wallet,
+  X,
 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -38,7 +38,10 @@ interface Partner {
   description: string;
   url: string;
   meta?: string;
-  icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  icon?: React.ComponentType<{
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
 }
 
 // ── Data ────────────────────────────────────────────────────────────────────
@@ -113,7 +116,8 @@ const PARTNERS: Partner[] = [
   {
     name: "Blockdaemon",
     category: "Custody",
-    description: "Provider self-custody & node infrastructure untuk Canton Network.",
+    description:
+      "Provider self-custody & node infrastructure untuk Canton Network.",
     meta: "Node & Custody",
     icon: Network,
     url: "https://www.blockdaemon.com",
@@ -190,7 +194,8 @@ const PARTNERS: Partner[] = [
   {
     name: "Console Wallet",
     category: "Retail Wallet",
-    description: "Dukungan penuh token CC dengan fitur manajemen portofolio lengkap.",
+    description:
+      "Dukungan penuh token CC dengan fitur manajemen portofolio lengkap.",
     meta: "Full CC Support",
     icon: Wallet,
     url: "https://console.finance",
@@ -225,7 +230,8 @@ const PARTNERS: Partner[] = [
   {
     name: "Zoro Wallet",
     category: "Retail Wallet",
-    description: "Wallet retail + fitur swap CC yang memudahkan pertukaran aset.",
+    description:
+      "Wallet retail + fitur swap CC yang memudahkan pertukaran aset.",
     meta: "Built-in Swap",
     icon: Wallet,
     url: "https://zoro.finance",
@@ -630,7 +636,10 @@ function AboutSection() {
                   border: "1px solid oklch(0.76 0.12 80 / 0.25)",
                 }}
               >
-                <Info className="w-7 h-7" style={{ color: "oklch(0.85 0.15 78)" }} />
+                <Info
+                  className="w-7 h-7"
+                  style={{ color: "oklch(0.85 0.15 78)" }}
+                />
               </div>
               <span
                 className="text-xs font-mono-dm font-medium tracking-widest uppercase px-3 py-1 rounded-full whitespace-nowrap"
@@ -650,15 +659,16 @@ function AboutSection() {
                 About This Directory
               </h2>
               <p className="text-white/55 font-grotesk leading-relaxed mb-6 text-base md:text-lg">
-                Proyek independen ini dibuat untuk membantu developer, pengguna, dan
-                institusi menemukan siapa saja yang menjadi bagian dari ekosistem Canton
-                Network — termasuk partner resmi, komunitas, dan inisiatif teknologi.
+                Proyek independen ini dibuat untuk membantu developer, pengguna,
+                dan institusi menemukan siapa saja yang menjadi bagian dari
+                ekosistem Canton Network — termasuk partner resmi, komunitas,
+                dan inisiatif teknologi.
               </p>
               <p className="text-white/40 font-grotesk leading-relaxed text-sm">
-                Direktori ini bukan afiliasi resmi Canton Network atau Digital Asset. Data
-                dikumpulkan dari sumber publik dan diperbarui secara berkala oleh komunitas.
-                Jika organisasi kamu belum terdaftar atau ada informasi yang perlu
-                diperbarui, silakan{" "}
+                Direktori ini bukan afiliasi resmi Canton Network atau Digital
+                Asset. Data dikumpulkan dari sumber publik dan diperbarui secara
+                berkala oleh komunitas. Jika organisasi kamu belum terdaftar
+                atau ada informasi yang perlu diperbarui, silakan{" "}
                 <button
                   type="button"
                   onClick={() => {
@@ -716,7 +726,9 @@ function AboutSection() {
                       <div className="text-sm font-semibold text-white/80 font-grotesk mb-0.5">
                         {item.label}
                       </div>
-                      <div className="text-xs text-white/35 font-grotesk">{item.desc}</div>
+                      <div className="text-xs text-white/35 font-grotesk">
+                        {item.desc}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -747,9 +759,7 @@ function PlatformCard({ partner, delay = 0 }: PlatformCardProps) {
       ? "linear-gradient(135deg, oklch(0.20 0.04 255), oklch(0.18 0.04 255))"
       : "oklch(0.165 0.035 255)",
     border: `1px solid ${
-      hovered
-        ? styles.border
-        : "oklch(0.28 0.04 255 / 0.4)"
+      hovered ? styles.border : "oklch(0.28 0.04 255 / 0.4)"
     }`,
     boxShadow: hovered
       ? `${styles.shadow}, 0 8px 24px oklch(0.08 0.02 255 / 0.6)`
@@ -829,7 +839,9 @@ function PlatformCard({ partner, delay = 0 }: PlatformCardProps) {
           <h3
             className="font-display text-base font-semibold mb-1.5 transition-colors duration-200"
             style={{
-              color: hovered ? "oklch(0.96 0.008 250)" : "oklch(0.88 0.008 250)",
+              color: hovered
+                ? "oklch(0.96 0.008 250)"
+                : "oklch(0.88 0.008 250)",
             }}
           >
             {partner.name}
@@ -914,24 +926,30 @@ function SectionHeader({
       <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
         {title}
       </h2>
-      <p className="text-white/45 text-base font-grotesk max-w-2xl">{subtitle}</p>
+      <p className="text-white/45 text-base font-grotesk max-w-2xl">
+        {subtitle}
+      </p>
     </div>
   );
 }
 
 // ── DirectorySection (Search + Filter + All partners) ────────────────────────
 
-const FILTER_OPTIONS: Array<{ label: string; value: PartnerCategory | "All" }> = [
-  { label: "All", value: "All" },
-  { label: "Exchange", value: "Exchange" },
-  { label: "Custody", value: "Custody" },
-  { label: "Infrastructure", value: "Infrastructure" },
-  { label: "Developer", value: "Developer" },
-  { label: "Retail Wallet", value: "Retail Wallet" },
-  { label: "Hardware", value: "Hardware" },
-];
+const FILTER_OPTIONS: Array<{ label: string; value: PartnerCategory | "All" }> =
+  [
+    { label: "All", value: "All" },
+    { label: "Exchange", value: "Exchange" },
+    { label: "Custody", value: "Custody" },
+    { label: "Infrastructure", value: "Infrastructure" },
+    { label: "Developer", value: "Developer" },
+    { label: "Retail Wallet", value: "Retail Wallet" },
+    { label: "Hardware", value: "Hardware" },
+  ];
 
-const SECTION_ACCENT: Record<PartnerCategory, "gold" | "blue" | "green" | "purple"> = {
+const SECTION_ACCENT: Record<
+  PartnerCategory,
+  "gold" | "blue" | "green" | "purple"
+> = {
   Exchange: "gold",
   Custody: "blue",
   Infrastructure: "blue",
@@ -957,7 +975,9 @@ const SECTION_SUBTITLE: Record<PartnerCategory, string> = {
 
 function DirectorySection() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<PartnerCategory | "All">("All");
+  const [activeFilter, setActiveFilter] = useState<PartnerCategory | "All">(
+    "All",
+  );
 
   const filteredPartners = useMemo(() => {
     return PARTNERS.filter((p) => {
@@ -1028,8 +1048,8 @@ function DirectorySection() {
             Ekosistem Partner
           </h2>
           <p className="text-white/45 text-base md:text-lg font-grotesk max-w-2xl">
-            {PARTNERS.length}+ organisasi yang mendukung Canton Network — dari exchange
-            global hingga developer tools.
+            {PARTNERS.length}+ organisasi yang mendukung Canton Network — dari
+            exchange global hingga developer tools.
           </p>
         </div>
 
@@ -1106,7 +1126,9 @@ function DirectorySection() {
                   <span
                     className="px-1.5 py-0.5 rounded-full text-xs font-mono-dm"
                     style={{
-                      background: isActive ? styles.border : "oklch(0.22 0.04 255)",
+                      background: isActive
+                        ? styles.border
+                        : "oklch(0.22 0.04 255)",
                       color: isActive ? styles.text : "oklch(0.50 0.03 255)",
                     }}
                   >
@@ -1139,72 +1161,83 @@ function DirectorySection() {
         {/* Partner grid by category */}
         {hasResults ? (
           <div className="space-y-16">
-            {(Object.keys(groupedPartners) as PartnerCategory[]).map((category) => {
-              const partners = groupedPartners[category] ?? [];
-              const accent = SECTION_ACCENT[category];
-              const subtitle = SECTION_SUBTITLE[category];
-              const sectionId = category.toLowerCase().replace(/\s+/g, "-");
+            {(Object.keys(groupedPartners) as PartnerCategory[]).map(
+              (category) => {
+                const partners = groupedPartners[category] ?? [];
+                const accent = SECTION_ACCENT[category];
+                const subtitle = SECTION_SUBTITLE[category];
+                const sectionId = category.toLowerCase().replace(/\s+/g, "-");
 
-              return (
-                <div key={category} id={sectionId}>
-                  <SectionHeader
-                    eyebrow={category}
-                    title={category === "Exchange" ? "Platform Perdagangan"
-                      : category === "Custody" ? "Custody & Trust"
-                      : category === "Infrastructure" ? "Infrastructure & Validators"
-                      : category === "Developer" ? "Developer Tooling"
-                      : category === "Retail Wallet" ? "Retail Wallets"
-                      : "Hardware Wallets"}
-                    subtitle={subtitle}
-                    accentColor={accent}
-                  />
-                  <div
-                    className={`grid gap-4 ${
-                      partners.length === 1
-                        ? "grid-cols-1 max-w-lg"
-                        : partners.length === 2
-                        ? "grid-cols-1 sm:grid-cols-2 max-w-2xl"
-                        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                    }`}
-                  >
-                    {partners.map((partner, i) => (
-                      <PlatformCard
-                        key={`${partner.name}-${partner.category}`}
-                        partner={partner}
-                        delay={i * 0.08}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Note for Exchange section */}
-                  {category === "Exchange" && activeFilter === "All" && !searchQuery && (
+                return (
+                  <div key={category} id={sectionId}>
+                    <SectionHeader
+                      eyebrow={category}
+                      title={
+                        category === "Exchange"
+                          ? "Platform Perdagangan"
+                          : category === "Custody"
+                            ? "Custody & Trust"
+                            : category === "Infrastructure"
+                              ? "Infrastructure & Validators"
+                              : category === "Developer"
+                                ? "Developer Tooling"
+                                : category === "Retail Wallet"
+                                  ? "Retail Wallets"
+                                  : "Hardware Wallets"
+                      }
+                      subtitle={subtitle}
+                      accentColor={accent}
+                    />
                     <div
-                      className="mt-6 px-5 py-4 rounded-xl flex items-start gap-3"
-                      style={{
-                        background: "oklch(0.76 0.12 80 / 0.06)",
-                        border: "1px solid oklch(0.76 0.12 80 / 0.15)",
-                      }}
+                      className={`grid gap-4 ${
+                        partners.length === 1
+                          ? "grid-cols-1 max-w-lg"
+                          : partners.length === 2
+                            ? "grid-cols-1 sm:grid-cols-2 max-w-2xl"
+                            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                      }`}
                     >
-                      <Globe
-                        className="w-4 h-4 mt-0.5 shrink-0"
-                        style={{ color: "oklch(0.85 0.15 78)" }}
-                      />
-                      <p className="text-sm font-grotesk text-white/50">
-                        <span
-                          style={{ color: "oklch(0.85 0.15 78)" }}
-                          className="font-medium"
-                        >
-                          Catatan:
-                        </span>{" "}
-                        Token CC juga dilaporkan tersedia di banyak listing mayor lainnya
-                        di pasar global. Daftar di atas mencakup exchange utama yang telah
-                        terkonfirmasi.
-                      </p>
+                      {partners.map((partner, i) => (
+                        <PlatformCard
+                          key={`${partner.name}-${partner.category}`}
+                          partner={partner}
+                          delay={i * 0.08}
+                        />
+                      ))}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+
+                    {/* Note for Exchange section */}
+                    {category === "Exchange" &&
+                      activeFilter === "All" &&
+                      !searchQuery && (
+                        <div
+                          className="mt-6 px-5 py-4 rounded-xl flex items-start gap-3"
+                          style={{
+                            background: "oklch(0.76 0.12 80 / 0.06)",
+                            border: "1px solid oklch(0.76 0.12 80 / 0.15)",
+                          }}
+                        >
+                          <Globe
+                            className="w-4 h-4 mt-0.5 shrink-0"
+                            style={{ color: "oklch(0.85 0.15 78)" }}
+                          />
+                          <p className="text-sm font-grotesk text-white/50">
+                            <span
+                              style={{ color: "oklch(0.85 0.15 78)" }}
+                              className="font-medium"
+                            >
+                              Catatan:
+                            </span>{" "}
+                            Token CC juga dilaporkan tersedia di banyak listing
+                            mayor lainnya di pasar global. Daftar di atas
+                            mencakup exchange utama yang telah terkonfirmasi.
+                          </p>
+                        </div>
+                      )}
+                  </div>
+                );
+              },
+            )}
           </div>
         ) : (
           /* Empty state */
@@ -1216,13 +1249,17 @@ function DirectorySection() {
                 border: "1px solid oklch(0.28 0.04 255 / 0.4)",
               }}
             >
-              <Search className="w-7 h-7" style={{ color: "oklch(0.50 0.03 255)" }} />
+              <Search
+                className="w-7 h-7"
+                style={{ color: "oklch(0.50 0.03 255)" }}
+              />
             </div>
             <h3 className="font-display text-xl font-semibold text-white/60 mb-2">
               Tidak ada hasil ditemukan
             </h3>
             <p className="text-sm font-grotesk text-white/35 mb-6 max-w-xs">
-              Coba kata kunci lain atau reset filter untuk melihat semua partner.
+              Coba kata kunci lain atau reset filter untuk melihat semua
+              partner.
             </p>
             <button
               type="button"
@@ -1283,9 +1320,10 @@ function SubmitSection() {
           </h2>
 
           <p className="text-white/50 font-grotesk text-base md:text-lg leading-relaxed mb-10">
-            Kalau organisasi kamu belum terdaftar, kirim detailnya agar bisa ditambahkan
-            ke direktori ini. Kami menerima submission dari exchange, wallet, validator,
-            developer tools, dan semua inisiatif yang mendukung Canton Network.
+            Kalau organisasi kamu belum terdaftar, kirim detailnya agar bisa
+            ditambahkan ke direktori ini. Kami menerima submission dari
+            exchange, wallet, validator, developer tools, dan semua inisiatif
+            yang mendukung Canton Network.
           </p>
 
           {/* Card */}
@@ -1323,7 +1361,10 @@ function SubmitSection() {
                   border: "1px solid oklch(0.76 0.12 80 / 0.3)",
                 }}
               >
-                <Send className="w-8 h-8" style={{ color: "oklch(0.85 0.15 78)" }} />
+                <Send
+                  className="w-8 h-8"
+                  style={{ color: "oklch(0.85 0.15 78)" }}
+                />
               </div>
 
               <div className="flex-1">
@@ -1331,9 +1372,9 @@ function SubmitSection() {
                   Submit Your Organization
                 </h3>
                 <p className="text-white/45 font-grotesk text-sm leading-relaxed mb-5">
-                  Isi form berikut dengan informasi organisasi kamu: nama, kategori, URL
-                  resmi, dan deskripsi singkat. Tim kami akan mereview dan menambahkan ke
-                  direktori dalam 2-3 hari kerja.
+                  Isi form berikut dengan informasi organisasi kamu: nama,
+                  kategori, URL resmi, dan deskripsi singkat. Tim kami akan
+                  mereview dan menambahkan ke direktori dalam 2-3 hari kerja.
                 </p>
 
                 {/* What we accept */}
@@ -1408,7 +1449,10 @@ function SubmitSection() {
               style={{ color: "oklch(0.78 0.18 240)" }}
             />
             <p className="text-sm font-grotesk text-white/50">
-              <span style={{ color: "oklch(0.78 0.18 240)" }} className="font-medium">
+              <span
+                style={{ color: "oklch(0.78 0.18 240)" }}
+                className="font-medium"
+              >
                 Spread the word:
               </span>{" "}
               Tag{" "}
@@ -1421,8 +1465,8 @@ function SubmitSection() {
               >
                 @CantonNetwork
               </a>{" "}
-              di X/Twitter untuk memberitahu bahwa direktori ini ada dan terbuka untuk
-              semua partner ekosistem.
+              di X/Twitter untuk memberitahu bahwa direktori ini ada dan terbuka
+              untuk semua partner ekosistem.
             </p>
           </div>
         </div>
@@ -1468,8 +1512,8 @@ function CantonFooter() {
               className="h-10 w-auto object-contain mb-4"
             />
             <p className="text-white/35 text-sm font-grotesk leading-relaxed max-w-xs">
-              Direktori komunitas independen untuk ekosistem Canton Network. Membantu
-              developer, pengguna, dan institusi menavigasi ekosistem.
+              Direktori komunitas independen untuk ekosistem Canton Network.
+              Membantu developer, pengguna, dan institusi menavigasi ekosistem.
             </p>
 
             {/* Badge */}
@@ -1532,8 +1576,13 @@ function CantonFooter() {
                 { label: "Retail Wallet", value: "7" },
                 { label: "Developer Tools", value: "1+" },
               ].map((stat) => (
-                <div key={stat.label} className="flex items-center justify-between">
-                  <span className="text-xs font-grotesk text-white/30">{stat.label}</span>
+                <div
+                  key={stat.label}
+                  className="flex items-center justify-between"
+                >
+                  <span className="text-xs font-grotesk text-white/30">
+                    {stat.label}
+                  </span>
                   <span
                     className="text-sm font-mono-dm font-semibold"
                     style={{ color: "oklch(0.85 0.15 78)" }}
@@ -1558,14 +1607,15 @@ function CantonFooter() {
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs font-grotesk text-white/25 text-center md:text-left">
-            Direktori komunitas independen. Bukan afiliasi resmi Canton Network atau
-            Digital Asset.
+            Direktori komunitas independen. Bukan afiliasi resmi Canton Network
+            atau Digital Asset.
           </p>
           <p className="text-xs font-grotesk text-white/25 text-center md:text-right">
-            © {new Date().getFullYear()} Canton Network Ecosystem. Built with ♥ using{" "}
+            © {new Date().getFullYear()} Canton Network Ecosystem. Built with ♥
+            using{" "}
             <a
               href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(
-                window.location.hostname
+                window.location.hostname,
               )}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -1589,20 +1639,22 @@ export default function CantonPage() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in-up");
             entry.target.classList.remove("opacity-0", "translate-y-4");
           }
-        });
+        }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
     );
 
     const cards = pageRef.current?.querySelectorAll(".observe-animate");
-    cards?.forEach((card) => {
-      observer.observe(card);
-    });
+    if (cards) {
+      for (const card of cards) {
+        observer.observe(card);
+      }
+    }
 
     return () => observer.disconnect();
   }, []);
@@ -1611,7 +1663,10 @@ export default function CantonPage() {
     <div
       ref={pageRef}
       className="min-h-screen"
-      style={{ background: "oklch(0.10 0.025 255)", color: "oklch(0.96 0.008 250)" }}
+      style={{
+        background: "oklch(0.10 0.025 255)",
+        color: "oklch(0.96 0.008 250)",
+      }}
     >
       <NavBar />
       <main>

@@ -20,14 +20,28 @@ export interface ReferralLink {
   'jumlahKlik' : bigint,
 }
 export type Time = bigint;
+export interface Transaction {
+  'id' : bigint,
+  'to' : Principal,
+  'from' : Principal,
+  'note' : [] | [string],
+  'timestamp' : Time,
+  'amount' : bigint,
+}
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'adminMintCC' : ActorMethod<[Principal, bigint, [] | [string]], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'buatLink' : ActorMethod<[string, string, [] | [string]], ReferralLink>,
+  'getCCBalance' : ActorMethod<[], bigint>,
+  'getCCTransactionHistory' : ActorMethod<
+    [[] | [Principal]],
+    Array<Transaction>
+  >,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getKodeLink' : ActorMethod<[string], ReferralLink>,
@@ -39,6 +53,7 @@ export interface _SERVICE {
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'redirectLinkAndCount' : ActorMethod<[string], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'sendCC' : ActorMethod<[Principal, bigint, [] | [string]], undefined>,
   'updateLinkData' : ActorMethod<
     [string, [] | [string], [] | [string]],
     ReferralLink

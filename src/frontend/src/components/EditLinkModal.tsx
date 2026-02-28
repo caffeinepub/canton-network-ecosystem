@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
-import { useUpdateLinkData } from "../hooks/useQueries";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { ReferralLink } from "../backend.d";
+import { useUpdateLinkData } from "../hooks/useQueries";
 
 interface EditLinkModalProps {
   link: ReferralLink | null;
@@ -108,9 +108,7 @@ export default function EditLinkModal({
               }}
               className={urlError ? "border-destructive" : ""}
             />
-            {urlError && (
-              <p className="text-destructive text-xs">{urlError}</p>
-            )}
+            {urlError && <p className="text-destructive text-xs">{urlError}</p>}
           </div>
 
           {/* Deskripsi */}

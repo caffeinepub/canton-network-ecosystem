@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Principal } from "@icp-sdk/core/principal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ReferralLink, Transaction, UserProfile } from "../backend.d";
 import { useActor } from "./useActor";
-import type { ReferralLink, UserProfile } from "../backend.d";
 
 // ─── User Profile ───────────────────────────────────────────────────────────
 
@@ -115,7 +116,7 @@ export function useUpdateLinkData() {
   });
 }
 
-export function useGetKodeLink(kode: string, enabled: boolean = true) {
+export function useGetKodeLink(kode: string, enabled = true) {
   const { actor, isFetching: actorFetching } = useActor();
 
   return useQuery<ReferralLink>({
@@ -136,6 +137,59 @@ export function useRedirectLinkAndCount() {
     mutationFn: async (kode: string) => {
       if (!actor) throw new Error("Actor not available");
       return actor.redirectLinkAndCount(kode);
+    },
+  });
+}
+
+// ─── CC Wallet ───────────────────────────────────────────────────────────────
+
+export function useGetCCBalance(enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<bigint>({
+    queryKey: ["ccBalance"],
+    queryFn: async () => {
+      if (!actor) return BigInt(0);
+      return actor.getCCBalance();
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    refetchInterval: 30_000, // auto-refresh every 30s
+  });
+}
+
+export function useGetCCTransactionHistory(enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Transaction[]>({
+    queryKey: ["ccHistory"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getCCTransactionHistory(null);
+    },
+    enabled: !!actor && !actorFetching && enabled,
+  });
+}
+
+export function useSendCC() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      to,
+      amount,
+      note,
+    }: {
+      to: Principal;
+      amount: bigint;
+      note: string | null;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.sendCC(to, amount, note);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ccBalance"] });
+      queryClient.invalidateQueries({ queryKey: ["ccHistory"] });
     },
   });
 }

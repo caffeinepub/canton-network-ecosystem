@@ -23,15 +23,30 @@ export const ReferralLink = IDL.Record({
   'urlTujuan' : IDL.Text,
   'jumlahKlik' : IDL.Nat,
 });
+export const Transaction = IDL.Record({
+  'id' : IDL.Nat,
+  'to' : IDL.Principal,
+  'from' : IDL.Principal,
+  'note' : IDL.Opt(IDL.Text),
+  'timestamp' : Time,
+  'amount' : IDL.Nat,
+});
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'adminMintCC' : IDL.Func([IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'buatLink' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [ReferralLink],
       [],
+    ),
+  'getCCBalance' : IDL.Func([], [IDL.Nat], ['query']),
+  'getCCTransactionHistory' : IDL.Func(
+      [IDL.Opt(IDL.Principal)],
+      [IDL.Vec(Transaction)],
+      ['query'],
     ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
@@ -52,6 +67,7 @@ export const idlService = IDL.Service({
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'redirectLinkAndCount' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'sendCC' : IDL.Func([IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)], [], []),
   'updateLinkData' : IDL.Func(
       [IDL.Text, IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
       [ReferralLink],
@@ -77,15 +93,34 @@ export const idlFactory = ({ IDL }) => {
     'urlTujuan' : IDL.Text,
     'jumlahKlik' : IDL.Nat,
   });
+  const Transaction = IDL.Record({
+    'id' : IDL.Nat,
+    'to' : IDL.Principal,
+    'from' : IDL.Principal,
+    'note' : IDL.Opt(IDL.Text),
+    'timestamp' : Time,
+    'amount' : IDL.Nat,
+  });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'adminMintCC' : IDL.Func(
+        [IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)],
+        [],
+        [],
+      ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'buatLink' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
         [ReferralLink],
         [],
+      ),
+    'getCCBalance' : IDL.Func([], [IDL.Nat], ['query']),
+    'getCCTransactionHistory' : IDL.Func(
+        [IDL.Opt(IDL.Principal)],
+        [IDL.Vec(Transaction)],
+        ['query'],
       ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
@@ -106,6 +141,7 @@ export const idlFactory = ({ IDL }) => {
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'redirectLinkAndCount' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'sendCC' : IDL.Func([IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)], [], []),
     'updateLinkData' : IDL.Func(
         [IDL.Text, IDL.Opt(IDL.Text), IDL.Opt(IDL.Text)],
         [ReferralLink],

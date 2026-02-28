@@ -1,30 +1,32 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import ConnectWalletModal from "@/components/ConnectWalletModal";
 import {
-  Shield,
-  ShieldCheck,
+  type ICPIdentity,
+  checkEd25519Support,
+  downloadIdentityFile,
+  evaluatePasswordStrength,
+  generateICPIdentity,
+} from "@/lib/cryptoUtils";
+import {
+  AlertTriangle,
+  Check,
+  ChevronRight,
+  Copy,
+  Download,
+  ExternalLink,
   Eye,
   EyeOff,
-  Copy,
-  Check,
-  Download,
-  RefreshCw,
-  AlertTriangle,
-  Lock,
-  Key,
   Hash,
-  ChevronRight,
-  Mail,
-  Users,
-  ExternalLink,
+  Key,
   Loader2,
+  Lock,
+  Mail,
+  RefreshCw,
+  Shield,
+  ShieldCheck,
+  Users,
+  Wallet,
 } from "lucide-react";
-import {
-  generateCantonIdentity,
-  checkEd25519Support,
-  evaluatePasswordStrength,
-  downloadIdentityFile,
-  type CantonIdentity,
-} from "@/lib/cryptoUtils";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type GenerationState = "idle" | "generating" | "done" | "error";
@@ -36,7 +38,7 @@ interface CopyState {
 }
 
 // ── NavBar ────────────────────────────────────────────────────────────────────
-function NavBar() {
+function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -62,7 +64,7 @@ function NavBar() {
             <div className="identity-logo-mark">
               <div className="identity-logo-inner" />
             </div>
-            <span className="identity-nav-title">Canton Identity</span>
+            <span className="identity-nav-title">ICP Protocol</span>
             <span className="identity-beta-badge">Prototype</span>
           </div>
           {/* Nav links */}
@@ -81,6 +83,29 @@ function NavBar() {
                 {link.label}
               </button>
             ))}
+            <a href="/ecosystem" className="identity-nav-link">
+              Ecosystem
+            </a>
+            <a href="/wallet" className="identity-nav-link">
+              Wallet
+            </a>
+            <a href="/integration" className="identity-nav-link">
+              Integration
+            </a>
+            <a href="/developer" className="identity-nav-link">
+              Dev Docs
+            </a>
+            <a href="/featured-apps" className="identity-nav-link">
+              Featured Apps
+            </a>
+            <button
+              type="button"
+              onClick={onConnectWallet}
+              className="ig-connect-btn ml-2"
+            >
+              <Wallet className="w-3.5 h-3.5" />
+              Connect Wallet
+            </button>
           </div>
         </div>
       </div>
@@ -89,7 +114,9 @@ function NavBar() {
 }
 
 // ── HeroSection ───────────────────────────────────────────────────────────────
-function HeroSection({ onScrollToGenerate }: { onScrollToGenerate: () => void }) {
+function HeroSection({
+  onScrollToGenerate,
+}: { onScrollToGenerate: () => void }) {
   return (
     <section className="identity-hero relative overflow-hidden">
       {/* Grid overlay */}
@@ -106,8 +133,11 @@ function HeroSection({ onScrollToGenerate }: { onScrollToGenerate: () => void })
         </div>
 
         {/* Headline */}
-        <h1 className="identity-headline animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          Create a Canton-Compatible
+        <h1
+          className="identity-headline animate-fade-in-up"
+          style={{ animationDelay: "0.1s" }}
+        >
+          Create an ICP-Compatible
           <br />
           <span className="identity-headline-accent">Digital Identity</span>
         </h1>
@@ -117,8 +147,9 @@ function HeroSection({ onScrollToGenerate }: { onScrollToGenerate: () => void })
           className="identity-subheadline mt-6 max-w-2xl animate-fade-in-up"
           style={{ animationDelay: "0.2s" }}
         >
-          Generate secure cryptographic keypairs for institutional onboarding and
-          permissioned DLT environments. All operations run locally in your browser.
+          Generate secure cryptographic keypairs for institutional onboarding
+          and permissioned DLT environments. All operations run locally in your
+          browser.
         </p>
 
         {/* CTA */}
@@ -137,7 +168,11 @@ function HeroSection({ onScrollToGenerate }: { onScrollToGenerate: () => void })
           </button>
           <button
             type="button"
-            onClick={() => document.getElementById("security")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document
+                .getElementById("security")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
             className="identity-cta-secondary"
           >
             <ShieldCheck className="w-4 h-4" />
@@ -167,7 +202,9 @@ function HeroSection({ onScrollToGenerate }: { onScrollToGenerate: () => void })
 }
 
 // ── PasswordStrengthBar ───────────────────────────────────────────────────────
-function PasswordStrengthBar({ strength }: { strength: "weak" | "medium" | "strong" | null }) {
+function PasswordStrengthBar({
+  strength,
+}: { strength: "weak" | "medium" | "strong" | null }) {
   if (!strength) return null;
   const levels = { weak: 1, medium: 2, strong: 3 };
   const colors = {
@@ -190,7 +227,9 @@ function PasswordStrengthBar({ strength }: { strength: "weak" | "medium" | "stro
           />
         ))}
       </div>
-      <span className={`text-xs font-medium identity-strength-${strength}-text`}>
+      <span
+        className={`text-xs font-medium identity-strength-${strength}-text`}
+      >
         {labels[strength]} password
       </span>
     </div>
@@ -198,7 +237,11 @@ function PasswordStrengthBar({ strength }: { strength: "weak" | "medium" | "stro
 }
 
 // ── CopyButton ────────────────────────────────────────────────────────────────
-function CopyButton({ isCopied, onCopy, label }: { isCopied: boolean; onCopy: () => void; label: string }) {
+function CopyButton({
+  isCopied,
+  onCopy,
+  label,
+}: { isCopied: boolean; onCopy: () => void; label: string }) {
   return (
     <button
       type="button"
@@ -230,7 +273,13 @@ interface IdentityFieldProps {
   onCopy: () => void;
 }
 
-function IdentityField({ label, value, icon: Icon, isCopied, onCopy }: IdentityFieldProps) {
+function IdentityField({
+  label,
+  value,
+  icon: Icon,
+  isCopied,
+  onCopy,
+}: IdentityFieldProps) {
   return (
     <div className="identity-output-field">
       <div className="identity-output-field-header">
@@ -240,9 +289,7 @@ function IdentityField({ label, value, icon: Icon, isCopied, onCopy }: IdentityF
         </div>
         <CopyButton isCopied={isCopied} onCopy={onCopy} label={label} />
       </div>
-      <div className="identity-output-value font-mono">
-        {value}
-      </div>
+      <div className="identity-output-value font-mono">{value}</div>
     </div>
   );
 }
@@ -251,10 +298,13 @@ function IdentityField({ label, value, icon: Icon, isCopied, onCopy }: IdentityF
 function GenerateSection() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [strength, setStrength] = useState<"weak" | "medium" | "strong" | null>(null);
+  const [strength, setStrength] = useState<"weak" | "medium" | "strong" | null>(
+    null,
+  );
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [generationState, setGenerationState] = useState<GenerationState>("idle");
-  const [identity, setIdentity] = useState<CantonIdentity | null>(null);
+  const [generationState, setGenerationState] =
+    useState<GenerationState>("idle");
+  const [identity, setIdentity] = useState<ICPIdentity | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [supported, setSupported] = useState<boolean | null>(null);
   const [copyState, setCopyState] = useState<CopyState>({
@@ -275,9 +325,8 @@ function GenerateSection() {
       // Small delay to let DOM render, then trigger animation
       const t = setTimeout(() => setOutputVisible(true), 50);
       return () => clearTimeout(t);
-    } else {
-      setOutputVisible(false);
     }
+    setOutputVisible(false);
   }, [generationState]);
 
   const handlePasswordChange = (val: string) => {
@@ -309,17 +358,20 @@ function GenerateSection() {
     await new Promise((r) => setTimeout(r, 400));
 
     try {
-      const result = await generateCantonIdentity(password);
+      const result = await generateICPIdentity(password);
       setIdentity(result);
       setGenerationState("done");
       setTimeout(() => {
-        outputRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        outputRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 400);
     } catch (err) {
       setErrorMessage(
         err instanceof Error
           ? err.message
-          : "Failed to generate identity. Your browser may not support Ed25519."
+          : "Failed to generate identity. Your browser may not support Ed25519.",
       );
       setGenerationState("error");
     }
@@ -332,7 +384,11 @@ function GenerateSection() {
     setStrength(null);
     setPasswordError(null);
     setErrorMessage(null);
-    setCopyState({ publicKey: false, identityId: false, encryptedPrivateKey: false });
+    setCopyState({
+      publicKey: false,
+      identityId: false,
+      encryptedPrivateKey: false,
+    });
     setOutputVisible(false);
   };
 
@@ -344,7 +400,7 @@ function GenerateSection() {
         setCopyState((prev) => ({ ...prev, [field]: false }));
       }, 2000);
     },
-    []
+    [],
   );
 
   const handleDownload = () => {
@@ -365,7 +421,8 @@ function GenerateSection() {
             Generate Secure Identity
           </h2>
           <p className="identity-section-subtitle mt-2">
-            Enter a strong password to encrypt your private key. The password is never stored or transmitted.
+            Enter a strong password to encrypt your private key. The password is
+            never stored or transmitted.
           </p>
         </div>
 
@@ -376,8 +433,8 @@ function GenerateSection() {
             <div>
               <div className="font-semibold mb-1">Browser Not Supported</div>
               <div className="text-sm opacity-80">
-                Ed25519 key generation requires Chrome 100+, Firefox 130+, or Safari 17+.
-                Please update your browser and try again.
+                Ed25519 key generation requires Chrome 100+, Firefox 130+, or
+                Safari 17+. Please update your browser and try again.
               </div>
             </div>
           </div>
@@ -407,7 +464,11 @@ function GenerateSection() {
                     disabled={generationState === "generating"}
                     autoComplete="new-password"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && !passwordError && password.length >= 8) {
+                      if (
+                        e.key === "Enter" &&
+                        !passwordError &&
+                        password.length >= 8
+                      ) {
                         void handleGenerate();
                       }
                     }}
@@ -417,7 +478,9 @@ function GenerateSection() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="identity-show-password-btn"
                     tabIndex={-1}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -445,8 +508,9 @@ function GenerateSection() {
               <div className="identity-info-note mb-6">
                 <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                 <p>
-                  Your password derives an AES-256-GCM key via PBKDF2 (100,000 iterations)
-                  to encrypt the private key. It is never stored anywhere.
+                  Your password derives an AES-256-GCM key via PBKDF2 (100,000
+                  iterations) to encrypt the private key. It is never stored
+                  anywhere.
                 </p>
               </div>
 
@@ -497,9 +561,12 @@ function GenerateSection() {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="identity-success-title">Identity Generated Successfully</div>
+                  <div className="identity-success-title">
+                    Identity Generated Successfully
+                  </div>
                   <div className="identity-success-sub">
-                    Save your password — without it, your encrypted key cannot be recovered.
+                    Save your password — without it, your encrypted key cannot
+                    be recovered.
                   </div>
                 </div>
               </div>
@@ -513,14 +580,18 @@ function GenerateSection() {
                       value={identity.publicKey}
                       icon={Key}
                       isCopied={copyState.publicKey}
-                      onCopy={() => void handleCopy("publicKey", identity.publicKey)}
+                      onCopy={() =>
+                        void handleCopy("publicKey", identity.publicKey)
+                      }
                     />
                     <IdentityField
                       label="Identity ID"
                       value={identity.identityId}
                       icon={Hash}
                       isCopied={copyState.identityId}
-                      onCopy={() => void handleCopy("identityId", identity.identityId)}
+                      onCopy={() =>
+                        void handleCopy("identityId", identity.identityId)
+                      }
                     />
                     <IdentityField
                       label="Encrypted Private Key"
@@ -528,7 +599,10 @@ function GenerateSection() {
                       icon={Lock}
                       isCopied={copyState.encryptedPrivateKey}
                       onCopy={() =>
-                        void handleCopy("encryptedPrivateKey", identity.encryptedPrivateKey)
+                        void handleCopy(
+                          "encryptedPrivateKey",
+                          identity.encryptedPrivateKey,
+                        )
                       }
                     />
                   </>
@@ -590,7 +664,7 @@ function SecuritySection() {
     {
       icon: ShieldCheck,
       title: "Independent Prototype",
-      text: "This is an independent community prototype. It is not affiliated with Canton Network, Digital Asset Holdings, or any official organization.",
+      text: "This is an independent community prototype. It is not affiliated with Internet Computer Protocol (ICP), DFINITY Foundation, or any official organization.",
     },
   ];
 
@@ -616,13 +690,18 @@ function SecuritySection() {
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <h3 className="identity-security-notice-title">Privacy Guarantee</h3>
+            <h3 className="identity-security-notice-title">
+              Privacy Guarantee
+            </h3>
             <p className="identity-security-notice-text mt-1">
-              This tool generates keys locally in your browser. No data is transmitted to any server.
-              This is an independent community prototype and is not affiliated with Canton Network.
+              This tool generates keys locally in your browser. No data is
+              transmitted to any server. This is an independent community
+              prototype and is not affiliated with Internet Computer Protocol
+              (ICP).
             </p>
             <p className="identity-security-notice-sub mt-3">
-              Store your password securely. Without it, your encrypted private key cannot be recovered.
+              Store your password securely. Without it, your encrypted private
+              key cannot be recovered.
             </p>
           </div>
         </div>
@@ -654,7 +733,7 @@ const ROADMAP_PHASES = [
     status: "active" as const,
     statusLabel: "Active",
     description:
-      "Generate and export Canton-compatible cryptographic identities using Ed25519 keypairs encrypted with AES-256-GCM.",
+      "Generate and export ICP-compatible cryptographic identities using Ed25519 keypairs encrypted with AES-256-GCM.",
     features: [
       "Ed25519 keypair generation",
       "AES-256-GCM private key encryption",
@@ -668,7 +747,7 @@ const ROADMAP_PHASES = [
     status: "upcoming" as const,
     statusLabel: "Upcoming",
     description:
-      "Connect identities to Canton participant nodes for seamless network onboarding and identity verification workflows.",
+      "Connect identities to ICP nodes for seamless network onboarding and identity verification workflows.",
     features: [
       "Node connection interface",
       "Identity verification",
@@ -705,7 +784,8 @@ function RoadmapSection() {
           </div>
           <h2 className="identity-section-title mt-3">Development Roadmap</h2>
           <p className="identity-section-subtitle mt-2 max-w-lg mx-auto">
-            A phased approach to building a complete Canton-compatible identity infrastructure.
+            A phased approach to building a complete ICP-compatible identity
+            infrastructure.
           </p>
         </div>
 
@@ -719,8 +799,12 @@ function RoadmapSection() {
             >
               {/* Phase label + status badge */}
               <div className="flex items-start justify-between mb-4">
-                <span className="identity-roadmap-phase-label">{phase.phase}</span>
-                <span className={`identity-roadmap-badge identity-roadmap-badge-${phase.status}`}>
+                <span className="identity-roadmap-phase-label">
+                  {phase.phase}
+                </span>
+                <span
+                  className={`identity-roadmap-badge identity-roadmap-badge-${phase.status}`}
+                >
                   {phase.statusLabel}
                 </span>
               </div>
@@ -735,7 +819,9 @@ function RoadmapSection() {
               <ul className="space-y-2">
                 {phase.features.map((feature) => (
                   <li key={feature} className="identity-roadmap-feature">
-                    <div className={`identity-roadmap-dot identity-roadmap-dot-${phase.status}`} />
+                    <div
+                      className={`identity-roadmap-dot identity-roadmap-dot-${phase.status}`}
+                    />
                     {feature}
                   </li>
                 ))}
@@ -763,14 +849,14 @@ function Footer() {
               <div className="identity-logo-mark identity-logo-mark-sm">
                 <div className="identity-logo-inner" />
               </div>
-              <span className="identity-footer-brand">Canton Identity</span>
+              <span className="identity-footer-brand">ICP Protocol</span>
             </div>
             <p className="identity-footer-tagline">
-              Canton-Compatible Identity &amp; Wallet Prototype
+              ICP-Compatible Identity &amp; Wallet Prototype
             </p>
             <p className="identity-footer-disclaimer mt-3">
-              Built as an independent community initiative.
-              Not affiliated with Canton Network or Digital Asset Holdings.
+              Built as an independent community initiative. Not affiliated with
+              DFINITY Foundation or Internet Computer Protocol.
             </p>
           </div>
 
@@ -781,8 +867,9 @@ function Footer() {
               Open for Collaboration
             </h4>
             <p className="identity-footer-body">
-              This project is open to contributors, researchers, and institutions interested
-              in Canton Network identity tooling. Community participation is welcome.
+              This project is open to contributors, researchers, and
+              institutions interested in ICP identity tooling. Community
+              participation is welcome.
             </p>
             <a
               href="https://github.com"
@@ -802,7 +889,8 @@ function Footer() {
               Contact
             </h4>
             <p className="identity-footer-body">
-              For inquiries, contributions, or partnership discussions, reach out at:
+              For inquiries, contributions, or partnership discussions, reach
+              out at:
             </p>
             <a
               href="mailto:contact@example.com"
@@ -820,9 +908,7 @@ function Footer() {
             © {year} Community Initiative. Open Source.
           </p>
           <p className="identity-footer-caffeine">
-            Built with{" "}
-            <span className="identity-footer-heart">♥</span>
-            {" "}using{" "}
+            Built with <span className="identity-footer-heart">♥</span> using{" "}
             <a
               href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
               target="_blank"
@@ -840,13 +926,19 @@ function Footer() {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function IdentityPrototypePage() {
+  const [walletOpen, setWalletOpen] = useState(false);
+
   const scrollToGenerate = () => {
     document.getElementById("generate")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="identity-page">
-      <NavBar />
+      <NavBar onConnectWallet={() => setWalletOpen(true)} />
+      <ConnectWalletModal
+        isOpen={walletOpen}
+        onClose={() => setWalletOpen(false)}
+      />
       <main>
         <HeroSection onScrollToGenerate={scrollToGenerate} />
         <GenerateSection />

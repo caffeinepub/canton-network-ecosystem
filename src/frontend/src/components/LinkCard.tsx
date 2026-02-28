@@ -1,7 +1,3 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,17 +9,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Copy,
   Check,
-  Pencil,
-  Trash2,
+  Copy,
   ExternalLink,
   MousePointerClick,
+  Pencil,
+  Trash2,
 } from "lucide-react";
-import { useHapusLink } from "../hooks/useQueries";
+import { useState } from "react";
 import { toast } from "sonner";
 import type { ReferralLink } from "../backend.d";
+import { useHapusLink } from "../hooks/useQueries";
 
 interface LinkCardProps {
   link: ReferralLink;
@@ -56,7 +56,7 @@ export default function LinkCard({ link, onEdit }: LinkCardProps) {
   };
 
   const formattedDate = new Date(
-    Number(link.tanggalDibuat / BigInt(1_000_000))
+    Number(link.tanggalDibuat / BigInt(1_000_000)),
   ).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "short",
@@ -73,7 +73,9 @@ export default function LinkCard({ link, onEdit }: LinkCardProps) {
               <span className="font-mono-dm font-500 text-primary text-sm bg-primary/10 px-2 py-0.5 rounded">
                 /{link.kode}
               </span>
-              <span className="text-muted-foreground text-xs">{formattedDate}</span>
+              <span className="text-muted-foreground text-xs">
+                {formattedDate}
+              </span>
             </div>
             {link.deskripsi && (
               <p className="text-sm text-muted-foreground truncate">
