@@ -23,6 +23,32 @@ export const ReferralLink = IDL.Record({
   'urlTujuan' : IDL.Text,
   'jumlahKlik' : IDL.Nat,
 });
+export const MarketCategory = IDL.Variant({
+  'Technology' : IDL.Null,
+  'Entertainment' : IDL.Null,
+  'Crypto' : IDL.Null,
+  'Politics' : IDL.Null,
+  'Sports' : IDL.Null,
+});
+export const MarketStatus = IDL.Variant({
+  'resolved' : IDL.Null,
+  'active' : IDL.Null,
+  'cancelled' : IDL.Null,
+});
+export const Market = IDL.Record({
+  'id' : IDL.Nat,
+  'status' : MarketStatus,
+  'title' : IDL.Text,
+  'creator' : IDL.Principal,
+  'totalYesPool' : IDL.Nat,
+  'resolvedOutcome' : IDL.Opt(IDL.Bool),
+  'createdAt' : Time,
+  'description' : IDL.Text,
+  'deadline' : Time,
+  'imageUrl' : IDL.Text,
+  'category' : MarketCategory,
+  'totalNoPool' : IDL.Nat,
+});
 export const Transaction = IDL.Record({
   'id' : IDL.Nat,
   'to' : IDL.Principal,
@@ -32,6 +58,23 @@ export const Transaction = IDL.Record({
   'amount' : IDL.Nat,
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const LeaderboardEntry = IDL.Record({
+  'betsCount' : IDL.Nat,
+  'user' : IDL.Principal,
+  'totalLost' : IDL.Nat,
+  'totalWon' : IDL.Nat,
+  'profit' : IDL.Int,
+});
+export const BetPosition = IDL.Variant({ 'no' : IDL.Null, 'yes' : IDL.Null });
+export const Bet = IDL.Record({
+  'id' : IDL.Nat,
+  'claimed' : IDL.Bool,
+  'marketId' : IDL.Nat,
+  'bettor' : IDL.Principal,
+  'timestamp' : Time,
+  'position' : BetPosition,
+  'amount' : IDL.Nat,
+});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -40,6 +83,12 @@ export const idlService = IDL.Service({
   'buatLink' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [ReferralLink],
+      [],
+    ),
+  'claimReward' : IDL.Func([IDL.Nat], [IDL.Nat], []),
+  'createMarket' : IDL.Func(
+      [IDL.Text, IDL.Text, MarketCategory, IDL.Text, Time],
+      [Market],
       [],
     ),
   'getCCBalance' : IDL.Func([], [IDL.Nat], ['query']),
@@ -51,12 +100,23 @@ export const idlService = IDL.Service({
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getKodeLink' : IDL.Func([IDL.Text], [ReferralLink], ['query']),
+  'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
   'getLinkByOwner' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(ReferralLink)],
       ['query'],
     ),
   'getLinksByCurrentUser' : IDL.Func([], [IDL.Vec(ReferralLink)], ['query']),
+  'getMarket' : IDL.Func([IDL.Nat], [IDL.Opt(Market)], ['query']),
+  'getMarketBets' : IDL.Func([IDL.Nat], [IDL.Vec(Bet)], ['query']),
+  'getMarkets' : IDL.Func([], [IDL.Vec(Market)], ['query']),
+  'getMarketsByCategory' : IDL.Func(
+      [MarketCategory],
+      [IDL.Vec(Market)],
+      ['query'],
+    ),
+  'getOrCreateBalance' : IDL.Func([], [IDL.Nat], []),
+  'getUserBets' : IDL.Func([], [IDL.Vec(Bet)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -65,7 +125,9 @@ export const idlService = IDL.Service({
   'hapusLink' : IDL.Func([IDL.Text], [], []),
   'incrementClickCount' : IDL.Func([IDL.Text], [], []),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'placeBet' : IDL.Func([IDL.Nat, BetPosition, IDL.Nat], [Bet], []),
   'redirectLinkAndCount' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
+  'resolveMarket' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'sendCC' : IDL.Func([IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)], [], []),
   'updateLinkData' : IDL.Func(
@@ -93,6 +155,32 @@ export const idlFactory = ({ IDL }) => {
     'urlTujuan' : IDL.Text,
     'jumlahKlik' : IDL.Nat,
   });
+  const MarketCategory = IDL.Variant({
+    'Technology' : IDL.Null,
+    'Entertainment' : IDL.Null,
+    'Crypto' : IDL.Null,
+    'Politics' : IDL.Null,
+    'Sports' : IDL.Null,
+  });
+  const MarketStatus = IDL.Variant({
+    'resolved' : IDL.Null,
+    'active' : IDL.Null,
+    'cancelled' : IDL.Null,
+  });
+  const Market = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : MarketStatus,
+    'title' : IDL.Text,
+    'creator' : IDL.Principal,
+    'totalYesPool' : IDL.Nat,
+    'resolvedOutcome' : IDL.Opt(IDL.Bool),
+    'createdAt' : Time,
+    'description' : IDL.Text,
+    'deadline' : Time,
+    'imageUrl' : IDL.Text,
+    'category' : MarketCategory,
+    'totalNoPool' : IDL.Nat,
+  });
   const Transaction = IDL.Record({
     'id' : IDL.Nat,
     'to' : IDL.Principal,
@@ -102,6 +190,23 @@ export const idlFactory = ({ IDL }) => {
     'amount' : IDL.Nat,
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const LeaderboardEntry = IDL.Record({
+    'betsCount' : IDL.Nat,
+    'user' : IDL.Principal,
+    'totalLost' : IDL.Nat,
+    'totalWon' : IDL.Nat,
+    'profit' : IDL.Int,
+  });
+  const BetPosition = IDL.Variant({ 'no' : IDL.Null, 'yes' : IDL.Null });
+  const Bet = IDL.Record({
+    'id' : IDL.Nat,
+    'claimed' : IDL.Bool,
+    'marketId' : IDL.Nat,
+    'bettor' : IDL.Principal,
+    'timestamp' : Time,
+    'position' : BetPosition,
+    'amount' : IDL.Nat,
+  });
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -116,6 +221,12 @@ export const idlFactory = ({ IDL }) => {
         [ReferralLink],
         [],
       ),
+    'claimReward' : IDL.Func([IDL.Nat], [IDL.Nat], []),
+    'createMarket' : IDL.Func(
+        [IDL.Text, IDL.Text, MarketCategory, IDL.Text, Time],
+        [Market],
+        [],
+      ),
     'getCCBalance' : IDL.Func([], [IDL.Nat], ['query']),
     'getCCTransactionHistory' : IDL.Func(
         [IDL.Opt(IDL.Principal)],
@@ -125,12 +236,23 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getKodeLink' : IDL.Func([IDL.Text], [ReferralLink], ['query']),
+    'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
     'getLinkByOwner' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(ReferralLink)],
         ['query'],
       ),
     'getLinksByCurrentUser' : IDL.Func([], [IDL.Vec(ReferralLink)], ['query']),
+    'getMarket' : IDL.Func([IDL.Nat], [IDL.Opt(Market)], ['query']),
+    'getMarketBets' : IDL.Func([IDL.Nat], [IDL.Vec(Bet)], ['query']),
+    'getMarkets' : IDL.Func([], [IDL.Vec(Market)], ['query']),
+    'getMarketsByCategory' : IDL.Func(
+        [MarketCategory],
+        [IDL.Vec(Market)],
+        ['query'],
+      ),
+    'getOrCreateBalance' : IDL.Func([], [IDL.Nat], []),
+    'getUserBets' : IDL.Func([], [IDL.Vec(Bet)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
@@ -139,7 +261,9 @@ export const idlFactory = ({ IDL }) => {
     'hapusLink' : IDL.Func([IDL.Text], [], []),
     'incrementClickCount' : IDL.Func([IDL.Text], [], []),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'placeBet' : IDL.Func([IDL.Nat, BetPosition, IDL.Nat], [Bet], []),
     'redirectLinkAndCount' : IDL.Func([IDL.Text], [IDL.Text], ['query']),
+    'resolveMarket' : IDL.Func([IDL.Nat, IDL.Bool], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'sendCC' : IDL.Func([IDL.Principal, IDL.Nat, IDL.Opt(IDL.Text)], [], []),
     'updateLinkData' : IDL.Func(

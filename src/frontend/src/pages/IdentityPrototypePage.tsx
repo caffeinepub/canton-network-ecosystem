@@ -83,20 +83,17 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
                 {link.label}
               </button>
             ))}
+            <a href="/markets" className="identity-nav-link">
+              Markets
+            </a>
+            <a href="/leaderboard" className="identity-nav-link">
+              Leaderboard
+            </a>
             <a href="/ecosystem" className="identity-nav-link">
               Ecosystem
             </a>
             <a href="/wallet" className="identity-nav-link">
               Wallet
-            </a>
-            <a href="/integration" className="identity-nav-link">
-              Integration
-            </a>
-            <a href="/developer" className="identity-nav-link">
-              Dev Docs
-            </a>
-            <a href="/featured-apps" className="identity-nav-link">
-              Featured Apps
             </a>
             <button
               type="button"

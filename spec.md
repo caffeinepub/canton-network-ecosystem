@@ -1,48 +1,30 @@
 # ICP Protocol Hub
 
 ## Current State
-Web app lengkap dengan 6 halaman:
-- `/` — Identity Generator (Canton-Compatible Identity & Wallet Prototype)
-- `/ecosystem` — Canton Network Ecosystem Directory (exchange & wallet)
-- `/wallet` — CC Token Wallet
-- `/integration` — Integration Guide (splice-wallet-kernel)
-- `/developer` — Developer Docs
-- `/featured-apps` — Featured Apps dari ekosistem Canton
-
-Semua branding, teks, dan referensi menggunakan "Canton Network", "Canton Identity", "CC token", "canton-compatible-identity", dll.
+The app has a Markets page (`/markets`) and a Market Detail page (`/markets/$id`) with full ICP-based prediction market functionality (place bets, view pools, claim rewards). There is no integration with the Unhedged.gg external API.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Tidak ada fitur baru
+- A new "Unhedged API Bet" panel/card on the Market Detail page that allows users to place bets via the Unhedged external API (`POST https://unhedged.gg/api/v1/bets`)
+- The panel accepts: Market ID (pre-filled with current market id), Outcome Index (0 = YES, 1 = NO selector), Amount in ICP
+- The panel shows the API endpoint, method, and auth token (masked) for transparency
+- Shows loading state while request is in flight
+- Shows success or error result from the API response
+- A "Developer Reference" collapsible section on the Markets page showing the curl command and API documentation for the Unhedged integration
 
 ### Modify
-- Semua navbar: "Canton Identity" → "ICP Protocol"
-- Badge "Prototype" tetap
-- Hero IdentityPrototypePage: headline dan subheadline diubah ke konteks ICP
-- Teks "Canton-Compatible Digital Identity" → "ICP-Compatible Digital Identity"
-- Teks "Canton Network" → "Internet Computer Protocol (ICP)" di semua halaman
-- Teks "CC token" → "ICP token" di WalletPage
-- EcosystemDirectoryPage: judul → "ICP Protocol Ecosystem Directory", deskripsi diperbarui ke konteks ICP
-- WalletPage: "Canton Tokens" → "ICP Tokens", "CC Wallet" → "ICP Wallet"
-- FeaturedAppsPage: badge "Featured Apps · Canton Ecosystem" → "Featured Apps · ICP Ecosystem"
-- DeveloperDocsPage: "Canton SDK Reference Docs" → "ICP SDK Reference Docs"
-- IntegrationGuidePage: judul dan konteks diubah ke ICP
-- ConnectWalletModal: "Canton Network · splice-wallet-kernel" → "ICP Network · splice-wallet-kernel", "Canton Mainnet" → "ICP Mainnet"
-- cryptoUtils.ts: type "canton-compatible-identity" → "icp-compatible-identity", nama file download dari "canton-identity-" → "icp-identity-"
-- Footer semua halaman: "Canton Network" → "Internet Computer Protocol"
-- SecuritySection IdentityPrototype: referensi Canton → ICP
-- RoadmapSection: konteks Canton → ICP
+- `MarketDetailPage.tsx`: Add an `UnhedgedBetPanel` component in the right column (below the main BetForm), showing the Unhedged API integration form
+- `MarketsPage.tsx`: Optionally add a small "External API" info banner/badge indicating Unhedged integration is available
 
 ### Remove
-- Tidak ada
+- Nothing removed
 
 ## Implementation Plan
-1. Update cryptoUtils.ts — type string dan download filename
-2. Update ConnectWalletModal.tsx — semua teks Canton → ICP
-3. Update IdentityPrototypePage.tsx — navbar, hero, security, roadmap, footer
-4. Update EcosystemDirectoryPage.tsx — navbar, hero, about, footer
-5. Update WalletPage.tsx — navbar, hero, wallet content, footer
-6. Update IntegrationGuidePage.tsx — navbar, hero, footer
-7. Update DeveloperDocsPage.tsx — navbar, hero, footer
-8. Update FeaturedAppsPage.tsx — navbar, hero, footer
+1. In `MarketDetailPage.tsx`: Add `UnhedgedBetPanel` component that:
+   - Has a distinct visual style (e.g. amber/gold accent) to differentiate from the native ICP bet form
+   - Has fields: Market ID (read-only, from URL param), Outcome (YES=0 / NO=1 toggle), Amount (number input, default 100)
+   - On submit: fires `fetch('https://unhedged.gg/api/v1/bets', { method: 'POST', headers: { Authorization: 'Bearer ak_MGZbA18VEeXakyPlrlcmPZgjiGNbnfuYBXTjZIBGbM7vqKaf', 'Content-Type': 'application/json' }, body: JSON.stringify({ marketId: id, outcomeIndex, amount }) })`
+   - Shows response status and message
+   - Displays the curl command equivalent for transparency
+2. In `MarketsPage.tsx`: Add a small info note in the controls area or footer mentioning Unhedged external API is available on market detail pages

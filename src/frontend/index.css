@@ -4494,4 +4494,1825 @@
     color: oklch(0.45 0.025 255);
     letter-spacing: 0.04em;
   }
+
+  /* ─── Prediction Markets Styles ─────────────────────────────────────────── */
+
+  /* NavBar active state */
+  .markets-nav-active {
+    color: oklch(0.82 0.2 145) !important;
+    background: oklch(0.62 0.2 145 / 0.1) !important;
+  }
+
+  .markets-user-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    background: oklch(0.52 0.16 245 / 0.12);
+    border: 1px solid oklch(0.52 0.16 245 / 0.3);
+    color: oklch(0.70 0.16 245);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .markets-user-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: oklch(0.72 0.2 145);
+    box-shadow: 0 0 6px oklch(0.72 0.2 145 / 0.6);
+  }
+
+  /* Hero */
+  .markets-hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    padding-top: 4rem;
+    background:
+      radial-gradient(ellipse at 20% 40%, oklch(0.62 0.2 145 / 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 20%, oklch(0.52 0.16 245 / 0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 85%, oklch(0.76 0.12 80 / 0.05) 0%, transparent 45%),
+      oklch(0.09 0.02 255);
+  }
+
+  .markets-hero-orb-1 {
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    top: -60px;
+    right: -100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, oklch(0.62 0.2 145 / 0.06), transparent 70%);
+    pointer-events: none;
+    filter: blur(60px);
+    animation: float 12s ease-in-out infinite;
+  }
+
+  .markets-hero-orb-2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    bottom: -60px;
+    left: -60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, oklch(0.52 0.16 245 / 0.05), transparent 70%);
+    pointer-events: none;
+    filter: blur(70px);
+    animation: float 15s ease-in-out infinite reverse 3s;
+  }
+
+  .markets-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+    background: oklch(0.62 0.2 145 / 0.1);
+    border: 1px solid oklch(0.62 0.2 145 / 0.3);
+    color: oklch(0.72 0.2 145);
+  }
+
+  .markets-hero-headline {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: oklch(0.96 0.008 255);
+  }
+
+  .markets-hero-accent {
+    color: oklch(0.72 0.2 145);
+    text-shadow: 0 0 60px oklch(0.72 0.2 145 / 0.3);
+  }
+
+  .markets-hero-sub {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: oklch(0.58 0.025 255);
+  }
+
+  .markets-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .markets-stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: oklch(0.96 0.008 255);
+    letter-spacing: -0.02em;
+  }
+
+  .markets-stat-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: oklch(0.50 0.025 255);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .markets-stat-divider {
+    width: 1px;
+    background: oklch(1 0 0 / 0.08);
+    align-self: stretch;
+  }
+
+  /* Category tabs */
+  .markets-tabs {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    border-radius: 10px;
+    padding: 3px;
+    flex-wrap: wrap;
+  }
+
+  .markets-tab {
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: oklch(0.55 0.025 255);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .markets-tab:hover {
+    color: oklch(0.80 0.01 255);
+    background: oklch(1 0 0 / 0.05);
+  }
+
+  .markets-tab-active {
+    background: oklch(0.62 0.2 145 / 0.15);
+    color: oklch(0.80 0.2 145);
+    border: 1px solid oklch(0.62 0.2 145 / 0.3);
+  }
+
+  /* Search */
+  .markets-search-wrap {
+    position: relative;
+  }
+
+  .markets-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: oklch(0.45 0.025 255);
+    pointer-events: none;
+  }
+
+  .markets-search-input {
+    padding: 8px 12px 8px 34px;
+    border-radius: 8px;
+    border: 1px solid oklch(1 0 0 / 0.1);
+    background: oklch(0.13 0.028 255);
+    color: oklch(0.88 0.01 255);
+    font-size: 0.875rem;
+    width: 200px;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .markets-search-input::placeholder {
+    color: oklch(0.40 0.02 255);
+  }
+
+  .markets-search-input:focus {
+    border-color: oklch(0.62 0.2 145 / 0.5);
+    box-shadow: 0 0 0 3px oklch(0.62 0.2 145 / 0.1);
+  }
+
+  /* Create button */
+  .markets-create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: oklch(0.62 0.2 145);
+    color: oklch(0.06 0.02 255);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 20px oklch(0.62 0.2 145 / 0.3);
+    white-space: nowrap;
+  }
+
+  .markets-create-btn:hover:not(:disabled) {
+    background: oklch(0.68 0.21 145);
+    box-shadow: 0 0 28px oklch(0.62 0.2 145 / 0.45);
+    transform: translateY(-1px);
+  }
+
+  .markets-create-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Market grid */
+  .markets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .markets-loading-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .markets-card-skeleton {
+    height: 220px;
+    border-radius: 16px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.06);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* Market card */
+  .markets-card {
+    position: relative;
+    display: block;
+    border-radius: 16px;
+    padding: 22px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: fade-in-up 0.5s ease-out both;
+    overflow: hidden;
+  }
+
+  .markets-card:hover {
+    transform: translateY(-3px);
+    border-color: oklch(0.62 0.2 145 / 0.25);
+    box-shadow: 0 8px 32px oklch(0.04 0.01 255 / 0.5), 0 0 20px oklch(0.62 0.2 145 / 0.08);
+  }
+
+  .markets-card-top-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.62 0.2 145 / 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .markets-card:hover .markets-card-top-line {
+    opacity: 1;
+  }
+
+  /* Category badge */
+  .markets-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  /* Status badges */
+  .markets-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .markets-status-active {
+    background: oklch(0.62 0.2 145 / 0.12);
+    border: 1px solid oklch(0.62 0.2 145 / 0.3);
+    color: oklch(0.72 0.2 145);
+  }
+
+  .markets-status-yes {
+    background: oklch(0.62 0.2 145 / 0.15);
+    border: 1px solid oklch(0.62 0.2 145 / 0.4);
+    color: oklch(0.78 0.2 145);
+  }
+
+  .markets-status-no {
+    background: oklch(0.65 0.22 25 / 0.15);
+    border: 1px solid oklch(0.65 0.22 25 / 0.4);
+    color: oklch(0.78 0.22 25);
+  }
+
+  .markets-status-cancelled {
+    background: oklch(0.28 0.04 255 / 0.4);
+    border: 1px solid oklch(0.35 0.04 255);
+    color: oklch(0.55 0.025 255);
+  }
+
+  /* Card text */
+  .markets-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: oklch(0.92 0.01 255);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+    transition: color 0.2s ease;
+  }
+
+  .markets-card:hover .markets-card-title {
+    color: oklch(0.96 0.008 255);
+  }
+
+  .markets-card-desc {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: oklch(0.52 0.025 255);
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Probability bar */
+  .markets-prob-section {
+    margin-top: 12px;
+  }
+
+  .markets-prob-yes-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.72 0.2 145);
+  }
+
+  .markets-prob-no-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.70 0.22 25);
+  }
+
+  .markets-prob-bar {
+    height: 6px;
+    border-radius: 100px;
+    background: oklch(0.18 0.035 255);
+    overflow: hidden;
+    display: flex;
+  }
+
+  .markets-prob-bar-lg {
+    height: 10px;
+    border-radius: 100px;
+    background: oklch(0.18 0.035 255);
+    overflow: hidden;
+    display: flex;
+    margin-top: 12px;
+  }
+
+  .markets-prob-fill-yes {
+    height: 100%;
+    background: linear-gradient(90deg, oklch(0.55 0.2 145), oklch(0.72 0.22 145));
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+
+  .markets-prob-fill-no {
+    height: 100%;
+    background: linear-gradient(90deg, oklch(0.60 0.22 25), oklch(0.72 0.22 25));
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+  }
+
+  /* Pool + deadline labels */
+  .markets-pool-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: oklch(0.50 0.025 255);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .markets-deadline-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: oklch(0.50 0.025 255);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Empty state */
+  .markets-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .markets-empty-icon {
+    color: oklch(0.35 0.04 255);
+  }
+
+  .markets-empty-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: oklch(0.70 0.02 255);
+  }
+
+  .markets-empty-sub {
+    font-size: 0.875rem;
+    color: oklch(0.45 0.025 255);
+    max-width: 300px;
+  }
+
+  /* Create Market Modal */
+  .markets-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: oklch(0.04 0.01 255 / 0.8);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .markets-modal {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    border-radius: 16px;
+    padding: 28px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    box-shadow: 0 24px 80px oklch(0.04 0.01 255 / 0.8);
+    overflow: hidden;
+    animation: scale-in 0.25s ease-out;
+  }
+
+  .markets-modal-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.62 0.2 145 / 0.5), transparent);
+  }
+
+  .markets-modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: oklch(0.94 0.01 255);
+    letter-spacing: -0.01em;
+  }
+
+  .markets-modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: oklch(0.50 0.025 255);
+    background: oklch(1 0 0 / 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .markets-modal-close:hover {
+    color: oklch(0.80 0.01 255);
+    background: oklch(1 0 0 / 0.1);
+  }
+
+  .markets-form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: oklch(0.62 0.025 255);
+  }
+
+  .markets-form-optional {
+    font-size: 0.75rem;
+    color: oklch(0.45 0.02 255);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .markets-modal-cancel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: oklch(0.55 0.025 255);
+    background: oklch(1 0 0 / 0.04);
+    border: 1px solid oklch(1 0 0 / 0.08);
+    transition: all 0.2s ease;
+  }
+
+  .markets-modal-cancel:hover {
+    color: oklch(0.75 0.02 255);
+    background: oklch(1 0 0 / 0.07);
+  }
+
+  .markets-modal-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: oklch(0.62 0.2 145);
+    color: oklch(0.06 0.02 255);
+    transition: all 0.2s ease;
+    box-shadow: 0 0 16px oklch(0.62 0.2 145 / 0.25);
+  }
+
+  .markets-modal-submit:hover:not(:disabled) {
+    background: oklch(0.68 0.21 145);
+    box-shadow: 0 0 24px oklch(0.62 0.2 145 / 0.4);
+  }
+
+  .markets-modal-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Market Detail ── */
+
+  .markets-back-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: oklch(0.55 0.025 255);
+    transition: color 0.2s ease;
+  }
+
+  .markets-back-link:hover {
+    color: oklch(0.80 0.02 255);
+  }
+
+  .markets-detail-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: oklch(0.96 0.008 255);
+  }
+
+  .markets-detail-desc {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: oklch(0.58 0.025 255);
+  }
+
+  /* Detail grid */
+  .market-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .market-detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .market-detail-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .market-detail-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 80px;
+  }
+
+  /* Probability card */
+  .market-prob-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 24px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    overflow: hidden;
+  }
+
+  .market-prob-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, oklch(0.62 0.2 145 / 0.4), transparent 50%, oklch(0.68 0.22 25 / 0.4));
+  }
+
+  .market-prob-icon {
+    color: oklch(0.60 0.025 255);
+  }
+
+  .market-prob-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .market-prob-yes-pct {
+    color: oklch(0.72 0.2 145);
+    text-shadow: 0 0 30px oklch(0.72 0.2 145 / 0.3);
+  }
+
+  .market-prob-no-pct {
+    color: oklch(0.70 0.22 25);
+    text-shadow: 0 0 30px oklch(0.70 0.22 25 / 0.3);
+  }
+
+  .market-prob-side-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .market-prob-yes-text {
+    color: oklch(0.72 0.2 145);
+  }
+
+  .market-prob-no-text {
+    color: oklch(0.70 0.22 25);
+  }
+
+  .market-prob-pool {
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.48 0.025 255);
+    margin-top: 2px;
+  }
+
+  .market-prob-vs {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: oklch(0.35 0.03 255);
+    letter-spacing: 0.1em;
+    align-self: center;
+  }
+
+  /* Bets card */
+  .market-bets-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 24px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    overflow: hidden;
+  }
+
+  .market-bets-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.52 0.16 245 / 0.2), transparent);
+  }
+
+  .market-bets-count {
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.50 0.025 255);
+    background: oklch(1 0 0 / 0.05);
+    border: 1px solid oklch(1 0 0 / 0.08);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .market-bets-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 32px 0;
+    text-align: center;
+  }
+
+  .market-bets-empty-text {
+    font-size: 0.875rem;
+    color: oklch(0.45 0.025 255);
+  }
+
+  /* Bet row */
+  .market-bet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: oklch(1 0 0 / 0.03);
+    border: 1px solid oklch(1 0 0 / 0.05);
+    transition: background 0.15s ease;
+  }
+
+  .market-bet-row:hover {
+    background: oklch(1 0 0 / 0.05);
+  }
+
+  .market-bet-position-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .market-bet-position-yes {
+    background: oklch(0.62 0.2 145 / 0.15);
+    color: oklch(0.72 0.2 145);
+    border: 1px solid oklch(0.62 0.2 145 / 0.25);
+  }
+
+  .market-bet-position-no {
+    background: oklch(0.65 0.22 25 / 0.15);
+    color: oklch(0.72 0.22 25);
+    border: 1px solid oklch(0.65 0.22 25 / 0.25);
+  }
+
+  .market-bet-yes-text {
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.72 0.2 145);
+  }
+
+  .market-bet-no-text {
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.70 0.22 25);
+  }
+
+  .market-bet-row-addr {
+    font-size: 0.75rem;
+    color: oklch(0.45 0.025 255);
+    margin-top: 1px;
+  }
+
+  .market-bet-row-amount {
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.78 0.01 255);
+  }
+
+  .market-bet-row-time {
+    font-size: 0.72rem;
+    color: oklch(0.42 0.02 255);
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Bet form card */
+  .market-bet-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 24px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    overflow: hidden;
+  }
+
+  .market-bet-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, oklch(0.62 0.2 145 / 0.3), oklch(0.68 0.22 25 / 0.3));
+  }
+
+  /* Position toggle */
+  .market-bet-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: oklch(0.10 0.025 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    border-radius: 10px;
+    padding: 3px;
+  }
+
+  .market-bet-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    color: oklch(0.48 0.025 255);
+    transition: all 0.2s ease;
+  }
+
+  .market-bet-yes-active {
+    background: oklch(0.62 0.2 145 / 0.18);
+    color: oklch(0.80 0.2 145);
+    border: 1px solid oklch(0.62 0.2 145 / 0.35);
+    box-shadow: 0 0 16px oklch(0.62 0.2 145 / 0.15);
+  }
+
+  .market-bet-no-active {
+    background: oklch(0.65 0.22 25 / 0.18);
+    color: oklch(0.80 0.22 25);
+    border: 1px solid oklch(0.65 0.22 25 / 0.35);
+    box-shadow: 0 0 16px oklch(0.65 0.22 25 / 0.15);
+  }
+
+  /* Preset buttons */
+  .market-bet-preset {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.50 0.025 255);
+    background: oklch(1 0 0 / 0.04);
+    border: 1px solid oklch(1 0 0 / 0.07);
+    transition: all 0.15s ease;
+  }
+
+  .market-bet-preset:hover {
+    color: oklch(0.72 0.02 255);
+    background: oklch(1 0 0 / 0.08);
+    border-color: oklch(1 0 0 / 0.12);
+  }
+
+  /* Payout display */
+  .market-bet-payout {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: oklch(0.10 0.025 255);
+    border: 1px solid oklch(1 0 0 / 0.07);
+  }
+
+  .market-bet-payout-label {
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.48 0.025 255);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .market-bet-payout-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: oklch(0.84 0.01 255);
+    letter-spacing: -0.01em;
+  }
+
+  .market-bet-payout-note {
+    font-size: 0.75rem;
+    color: oklch(0.42 0.02 255);
+    line-height: 1.5;
+  }
+
+  /* Bet submit button */
+  .markets-bet-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+  }
+
+  .markets-bet-yes-btn {
+    background: linear-gradient(135deg, oklch(0.55 0.2 145), oklch(0.65 0.22 145));
+    color: oklch(0.06 0.02 255);
+    box-shadow: 0 0 24px oklch(0.62 0.2 145 / 0.3);
+  }
+
+  .markets-bet-yes-btn:hover:not(:disabled) {
+    box-shadow: 0 0 32px oklch(0.62 0.2 145 / 0.5);
+    transform: translateY(-1px);
+  }
+
+  .markets-bet-no-btn {
+    background: linear-gradient(135deg, oklch(0.55 0.22 25), oklch(0.68 0.22 25));
+    color: oklch(0.06 0.02 255);
+    box-shadow: 0 0 24px oklch(0.65 0.22 25 / 0.3);
+  }
+
+  .markets-bet-no-btn:hover:not(:disabled) {
+    box-shadow: 0 0 32px oklch(0.65 0.22 25 / 0.5);
+    transform: translateY(-1px);
+  }
+
+  .markets-bet-submit-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Login prompt in bet card */
+  .market-bet-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 0;
+    text-align: center;
+  }
+
+  .market-bet-login-icon {
+    color: oklch(0.52 0.16 245 / 0.7);
+  }
+
+  .market-bet-login-text {
+    font-size: 0.875rem;
+    color: oklch(0.50 0.025 255);
+  }
+
+  /* Admin card */
+  .market-admin-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 20px;
+    background: oklch(0.76 0.12 80 / 0.05);
+    border: 1px solid oklch(0.76 0.12 80 / 0.2);
+    overflow: hidden;
+  }
+
+  .market-admin-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.76 0.12 80 / 0.5), transparent);
+  }
+
+  .market-admin-icon {
+    color: oklch(0.80 0.14 80);
+  }
+
+  .market-admin-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: oklch(0.80 0.14 80);
+  }
+
+  .market-admin-desc {
+    font-size: 0.8rem;
+    color: oklch(0.62 0.03 255);
+    line-height: 1.5;
+  }
+
+  .market-resolve-yes-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: oklch(0.62 0.2 145 / 0.18);
+    border: 1px solid oklch(0.62 0.2 145 / 0.35);
+    color: oklch(0.80 0.2 145);
+    transition: all 0.2s ease;
+  }
+
+  .market-resolve-yes-btn:hover:not(:disabled) {
+    background: oklch(0.62 0.2 145 / 0.25);
+    border-color: oklch(0.62 0.2 145 / 0.5);
+  }
+
+  .market-resolve-no-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: oklch(0.65 0.22 25 / 0.18);
+    border: 1px solid oklch(0.65 0.22 25 / 0.35);
+    color: oklch(0.78 0.22 25);
+    transition: all 0.2s ease;
+  }
+
+  .market-resolve-no-btn:hover:not(:disabled) {
+    background: oklch(0.65 0.22 25 / 0.25);
+    border-color: oklch(0.65 0.22 25 / 0.5);
+  }
+
+  .market-resolve-yes-btn:disabled,
+  .market-resolve-no-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Resolved banner */
+  .market-resolved-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid;
+  }
+
+  .market-resolved-yes {
+    background: oklch(0.62 0.2 145 / 0.1);
+    border-color: oklch(0.62 0.2 145 / 0.3);
+    color: oklch(0.78 0.2 145);
+  }
+
+  .market-resolved-no {
+    background: oklch(0.65 0.22 25 / 0.1);
+    border-color: oklch(0.65 0.22 25 / 0.3);
+    color: oklch(0.75 0.22 25);
+  }
+
+  .market-resolved-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .market-resolved-sub {
+    font-size: 0.78rem;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  /* Claims card */
+  .market-claims-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 20px;
+    background: oklch(0.62 0.2 145 / 0.06);
+    border: 1px solid oklch(0.62 0.2 145 / 0.25);
+    overflow: hidden;
+  }
+
+  .market-claims-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.62 0.2 145 / 0.6), transparent);
+  }
+
+  .market-claims-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: oklch(0.82 0.2 145);
+  }
+
+  .market-claim-icon {
+    color: oklch(0.80 0.16 80);
+  }
+
+  .market-claim-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: oklch(0.62 0.2 145 / 0.07);
+    border: 1px solid oklch(0.62 0.2 145 / 0.18);
+    flex-wrap: wrap;
+  }
+
+  .market-claim-label {
+    font-size: 0.82rem;
+    color: oklch(0.70 0.02 255);
+  }
+
+  .market-claim-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: oklch(0.76 0.12 80 / 0.18);
+    border: 1px solid oklch(0.76 0.12 80 / 0.35);
+    color: oklch(0.86 0.14 80);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .market-claim-btn:hover:not(:disabled) {
+    background: oklch(0.76 0.12 80 / 0.28);
+    border-color: oklch(0.76 0.12 80 / 0.5);
+  }
+
+  .market-claim-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Security notice */
+  .market-security-notice {
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 10px;
+    background: oklch(0.10 0.025 255);
+    border: 1px solid oklch(1 0 0 / 0.06);
+  }
+
+  .market-security-icon {
+    color: oklch(0.50 0.025 255);
+  }
+
+  .market-security-text {
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: oklch(0.45 0.025 255);
+  }
+
+  .market-loading-spinner {
+    color: oklch(0.62 0.2 145 / 0.5);
+  }
+
+  /* ── Leaderboard ── */
+
+  /* Podium */
+  .leaderboard-podium {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .leaderboard-podium-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 12px;
+    border-radius: 12px;
+    border: 1px solid;
+    min-width: 120px;
+    flex: 1;
+    max-width: 180px;
+  }
+
+  .leaderboard-rank-gold {
+    background: oklch(0.76 0.12 80 / 0.1);
+    border-color: oklch(0.76 0.12 80 / 0.3);
+    box-shadow: 0 0 24px oklch(0.76 0.12 80 / 0.1);
+  }
+
+  .leaderboard-rank-silver {
+    background: oklch(0.65 0.03 255 / 0.08);
+    border-color: oklch(0.60 0.025 255 / 0.25);
+  }
+
+  .leaderboard-rank-bronze {
+    background: oklch(0.65 0.14 40 / 0.08);
+    border-color: oklch(0.65 0.14 40 / 0.25);
+  }
+
+  .leaderboard-rank-default {
+    background: oklch(1 0 0 / 0.02);
+    border-color: oklch(1 0 0 / 0.06);
+  }
+
+  .leaderboard-podium-stand {
+    width: 100%;
+    border-radius: 8px;
+    background: oklch(1 0 0 / 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 12px;
+    gap: 4px;
+  }
+
+  .leaderboard-podium-medal {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .leaderboard-podium-rank {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: oklch(0.55 0.025 255);
+  }
+
+  .leaderboard-podium-info {
+    text-align: center;
+  }
+
+  .leaderboard-podium-principal {
+    font-size: 0.7rem;
+    color: oklch(0.52 0.025 255);
+    word-break: break-all;
+  }
+
+  .leaderboard-podium-profit {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: oklch(0.72 0.2 145);
+    margin-top: 4px;
+  }
+
+  .leaderboard-podium-bets {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.45 0.025 255);
+    margin-top: 2px;
+  }
+
+  /* Table */
+  .leaderboard-table {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid oklch(1 0 0 / 0.07);
+  }
+
+  .leaderboard-table-header {
+    display: grid;
+    grid-template-columns: 60px 1fr 130px 110px 110px 80px;
+    gap: 8px;
+    padding: 12px 16px;
+    background: oklch(0.11 0.025 255);
+    border-bottom: 1px solid oklch(1 0 0 / 0.06);
+  }
+
+  @media (max-width: 768px) {
+    .leaderboard-table-header {
+      grid-template-columns: 50px 1fr 110px 70px;
+    }
+  }
+
+  .leaderboard-col-rank {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.45 0.025 255);
+    display: flex;
+    align-items: center;
+  }
+
+  .leaderboard-col-trader {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.45 0.025 255);
+    display: flex;
+    align-items: center;
+  }
+
+  .leaderboard-col-num {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.45 0.025 255);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .leaderboard-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 130px 110px 110px 80px;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid oklch(1 0 0 / 0.04);
+    background: oklch(0.13 0.028 255);
+    transition: background 0.15s ease;
+    animation: fade-in-up 0.4s ease-out both;
+  }
+
+  @media (max-width: 768px) {
+    .leaderboard-row {
+      grid-template-columns: 50px 1fr 110px 70px;
+    }
+  }
+
+  .leaderboard-row:hover {
+    background: oklch(0.15 0.03 255);
+  }
+
+  .leaderboard-row:last-child {
+    border-bottom: none;
+  }
+
+  .leaderboard-row-gold {
+    background: oklch(0.76 0.12 80 / 0.05) !important;
+  }
+
+  .leaderboard-row-silver {
+    background: oklch(0.65 0.03 255 / 0.04) !important;
+  }
+
+  .leaderboard-row-bronze {
+    background: oklch(0.65 0.14 40 / 0.04) !important;
+  }
+
+  .leaderboard-row-me {
+    outline: 1px solid oklch(0.52 0.16 245 / 0.3) !important;
+    outline-offset: -1px;
+  }
+
+  .leaderboard-rank-badge {
+    font-size: 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    color: oklch(0.55 0.025 255);
+  }
+
+  .leaderboard-principal {
+    font-size: 0.82rem;
+    color: oklch(0.72 0.02 255);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .leaderboard-me-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: oklch(0.52 0.16 245 / 0.15);
+    border: 1px solid oklch(0.52 0.16 245 / 0.3);
+    color: oklch(0.68 0.16 245);
+  }
+
+  .leaderboard-profit {
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .leaderboard-profit-positive {
+    color: oklch(0.72 0.2 145);
+  }
+
+  .leaderboard-profit-negative {
+    color: oklch(0.68 0.22 25);
+  }
+
+  .leaderboard-won {
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.55 0.025 255);
+  }
+
+  .leaderboard-lost {
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.50 0.025 255);
+  }
+
+  .leaderboard-bets-count {
+    font-size: 0.82rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.55 0.025 255);
+  }
+
+  .leaderboard-row-skeleton {
+    height: 52px;
+    border-radius: 8px;
+    background: oklch(0.13 0.028 255);
+    border: 1px solid oklch(1 0 0 / 0.05);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* My rank card */
+  .leaderboard-my-card {
+    position: relative;
+    border-radius: 14px;
+    padding: 20px 24px;
+    background: oklch(0.52 0.16 245 / 0.07);
+    border: 1px solid oklch(0.52 0.16 245 / 0.2);
+    overflow: hidden;
+  }
+
+  .leaderboard-my-card-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.52 0.16 245 / 0.5), transparent);
+  }
+
+  .leaderboard-my-rank {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: oklch(0.70 0.16 245);
+    letter-spacing: -0.03em;
+  }
+
+  .leaderboard-my-label {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.50 0.025 255);
+  }
+
+  .leaderboard-my-principal {
+    font-size: 0.8rem;
+    color: oklch(0.62 0.02 255);
+    margin-top: 2px;
+  }
+
+  .leaderboard-my-stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: oklch(0.82 0.01 255);
+  }
+
+  .leaderboard-my-stat-label {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    color: oklch(0.45 0.025 255);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ── Unhedged Bet Panel ── */
+  .unhedged-panel {
+    position: relative;
+    border-radius: 14px;
+    padding: 20px 22px;
+    background: oklch(0.75 0.14 78 / 0.06);
+    border: 1px solid oklch(0.75 0.14 78 / 0.28);
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .unhedged-panel-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.75 0.15 78 / 0.7), transparent);
+  }
+
+  .unhedged-panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: oklch(0.88 0.12 78);
+    letter-spacing: -0.01em;
+  }
+
+  .unhedged-icon-wrap {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: oklch(0.75 0.15 78 / 0.15);
+    border: 1px solid oklch(0.75 0.15 78 / 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: oklch(0.82 0.14 78);
+    flex-shrink: 0;
+  }
+
+  .unhedged-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: oklch(0.75 0.14 78 / 0.1);
+    border: 1px solid oklch(0.75 0.14 78 / 0.3);
+    color: oklch(0.80 0.12 78);
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .unhedged-badge:hover {
+    background: oklch(0.75 0.14 78 / 0.18);
+    border-color: oklch(0.75 0.14 78 / 0.5);
+  }
+
+  .unhedged-form-label {
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.08 78);
+  }
+
+  .unhedged-input {
+    border-color: oklch(0.75 0.14 78 / 0.25) !important;
+  }
+
+  .unhedged-input:focus {
+    border-color: oklch(0.75 0.14 78 / 0.55) !important;
+    box-shadow: 0 0 0 3px oklch(0.75 0.14 78 / 0.12) !important;
+  }
+
+  .unhedged-outcome-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 10px;
+    border: 1px solid oklch(0.75 0.14 78 / 0.22);
+    overflow: hidden;
+    background: oklch(0.75 0.14 78 / 0.04);
+  }
+
+  .unhedged-outcome-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: oklch(0.55 0.025 255);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .unhedged-outcome-btn:hover {
+    color: oklch(0.80 0.12 78);
+    background: oklch(0.75 0.14 78 / 0.08);
+  }
+
+  .unhedged-outcome-yes-active {
+    background: oklch(0.72 0.2 145 / 0.2) !important;
+    color: oklch(0.72 0.2 145) !important;
+    border-right: 1px solid oklch(0.75 0.14 78 / 0.18);
+  }
+
+  .unhedged-outcome-no-active {
+    background: oklch(0.65 0.22 25 / 0.2) !important;
+    color: oklch(0.68 0.22 25) !important;
+  }
+
+  .unhedged-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: oklch(0.72 0.14 78 / 0.18);
+    border: 1px solid oklch(0.75 0.14 78 / 0.4);
+    color: oklch(0.88 0.12 78);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .unhedged-submit-btn:hover:not(:disabled) {
+    background: oklch(0.72 0.14 78 / 0.28);
+    border-color: oklch(0.75 0.14 78 / 0.65);
+    box-shadow: 0 0 16px oklch(0.75 0.14 78 / 0.18);
+  }
+
+  .unhedged-submit-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .unhedged-result-success {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    background: oklch(0.72 0.2 145 / 0.1);
+    border: 1px solid oklch(0.72 0.2 145 / 0.3);
+    color: oklch(0.72 0.2 145);
+  }
+
+  .unhedged-result-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    background: oklch(0.65 0.22 25 / 0.1);
+    border: 1px solid oklch(0.65 0.22 25 / 0.3);
+    color: oklch(0.68 0.22 25);
+  }
+
+  .unhedged-api-ref-wrap {
+    border-top: 1px solid oklch(0.75 0.14 78 / 0.15);
+    padding-top: 12px;
+  }
+
+  .unhedged-api-ref-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: oklch(0.62 0.08 78);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s ease;
+    padding: 2px 0;
+  }
+
+  .unhedged-api-ref-toggle:hover {
+    color: oklch(0.80 0.12 78);
+  }
+
+  .unhedged-api-ref-body {
+    margin-top: 10px;
+  }
+
+  .unhedged-api-ref-label {
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: oklch(0.52 0.04 255);
+  }
+
+  .unhedged-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    font-size: 0.68rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    background: oklch(0.75 0.14 78 / 0.1);
+    border: 1px solid oklch(0.75 0.14 78 / 0.25);
+    color: oklch(0.78 0.11 78);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .unhedged-copy-btn:hover {
+    background: oklch(0.75 0.14 78 / 0.2);
+    border-color: oklch(0.75 0.14 78 / 0.45);
+  }
+
+  .unhedged-api-ref-code {
+    margin-top: 8px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: oklch(0.10 0.02 255);
+    border: 1px solid oklch(0.75 0.14 78 / 0.18);
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    line-height: 1.6;
+    color: oklch(0.70 0.06 255);
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow: hidden;
+  }
+
+  /* Unhedged info note on MarketsPage */
+  .unhedged-info-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    background: oklch(0.75 0.14 78 / 0.05);
+    border: 1px solid oklch(0.75 0.14 78 / 0.2);
+    color: oklch(0.72 0.06 78);
+  }
+
+  .unhedged-info-note strong {
+    color: oklch(0.82 0.1 78);
+    font-weight: 600;
+  }
+
+  .unhedged-info-note svg {
+    color: oklch(0.78 0.12 78);
+  }
+
+  .unhedged-info-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    color: oklch(0.80 0.12 78);
+    text-decoration: none;
+    transition: color 0.15s ease;
+    margin-left: auto;
+  }
+
+  .unhedged-info-link:hover {
+    color: oklch(0.88 0.14 78);
+  }
 }

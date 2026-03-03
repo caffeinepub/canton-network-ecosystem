@@ -10,6 +10,46 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface Bet {
+  'id' : bigint,
+  'claimed' : boolean,
+  'marketId' : bigint,
+  'bettor' : Principal,
+  'timestamp' : Time,
+  'position' : BetPosition,
+  'amount' : bigint,
+}
+export type BetPosition = { 'no' : null } |
+  { 'yes' : null };
+export interface LeaderboardEntry {
+  'betsCount' : bigint,
+  'user' : Principal,
+  'totalLost' : bigint,
+  'totalWon' : bigint,
+  'profit' : bigint,
+}
+export interface Market {
+  'id' : bigint,
+  'status' : MarketStatus,
+  'title' : string,
+  'creator' : Principal,
+  'totalYesPool' : bigint,
+  'resolvedOutcome' : [] | [boolean],
+  'createdAt' : Time,
+  'description' : string,
+  'deadline' : Time,
+  'imageUrl' : string,
+  'category' : MarketCategory,
+  'totalNoPool' : bigint,
+}
+export type MarketCategory = { 'Technology' : null } |
+  { 'Entertainment' : null } |
+  { 'Crypto' : null } |
+  { 'Politics' : null } |
+  { 'Sports' : null };
+export type MarketStatus = { 'resolved' : null } |
+  { 'active' : null } |
+  { 'cancelled' : null };
 export interface ReferralLink {
   'id' : bigint,
   'tanggalDibuat' : Time,
@@ -37,6 +77,11 @@ export interface _SERVICE {
   'adminMintCC' : ActorMethod<[Principal, bigint, [] | [string]], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'buatLink' : ActorMethod<[string, string, [] | [string]], ReferralLink>,
+  'claimReward' : ActorMethod<[bigint], bigint>,
+  'createMarket' : ActorMethod<
+    [string, string, MarketCategory, string, Time],
+    Market
+  >,
   'getCCBalance' : ActorMethod<[], bigint>,
   'getCCTransactionHistory' : ActorMethod<
     [[] | [Principal]],
@@ -45,13 +90,22 @@ export interface _SERVICE {
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getKodeLink' : ActorMethod<[string], ReferralLink>,
+  'getLeaderboard' : ActorMethod<[], Array<LeaderboardEntry>>,
   'getLinkByOwner' : ActorMethod<[Principal], Array<ReferralLink>>,
   'getLinksByCurrentUser' : ActorMethod<[], Array<ReferralLink>>,
+  'getMarket' : ActorMethod<[bigint], [] | [Market]>,
+  'getMarketBets' : ActorMethod<[bigint], Array<Bet>>,
+  'getMarkets' : ActorMethod<[], Array<Market>>,
+  'getMarketsByCategory' : ActorMethod<[MarketCategory], Array<Market>>,
+  'getOrCreateBalance' : ActorMethod<[], bigint>,
+  'getUserBets' : ActorMethod<[], Array<Bet>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'hapusLink' : ActorMethod<[string], undefined>,
   'incrementClickCount' : ActorMethod<[string], undefined>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'placeBet' : ActorMethod<[bigint, BetPosition, bigint], Bet>,
   'redirectLinkAndCount' : ActorMethod<[string], string>,
+  'resolveMarket' : ActorMethod<[bigint, boolean], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'sendCC' : ActorMethod<[Principal, bigint, [] | [string]], undefined>,
   'updateLinkData' : ActorMethod<

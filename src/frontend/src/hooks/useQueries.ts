@@ -193,3 +193,236 @@ export function useSendCC() {
     },
   });
 }
+
+// ─── Prediction Markets ──────────────────────────────────────────────────────
+
+import type {
+  Bet,
+  LeaderboardEntry,
+  Market,
+  MarketCategory,
+} from "../backend.d";
+import { BetPosition } from "../backend.d";
+
+export function useGetMarkets() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Market[]>({
+    queryKey: ["markets"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getMarkets();
+    },
+    enabled: !!actor && !actorFetching,
+    staleTime: 30_000,
+  });
+}
+
+export function useGetMarketsByCategory(
+  category: MarketCategory,
+  enabled = true,
+) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Market[]>({
+    queryKey: ["markets", "category", category],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getMarketsByCategory(category);
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 30_000,
+  });
+}
+
+export function useGetMarket(id: bigint, enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Market | null>({
+    queryKey: ["market", id.toString()],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getMarket(id);
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 15_000,
+  });
+}
+
+export function useGetMarketBets(marketId: bigint, enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Bet[]>({
+    queryKey: ["marketBets", marketId.toString()],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getMarketBets(marketId);
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 15_000,
+  });
+}
+
+export function useGetUserBets(enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<Bet[]>({
+    queryKey: ["userBets"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getUserBets();
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 30_000,
+  });
+}
+
+export function useGetLeaderboard() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<LeaderboardEntry[]>({
+    queryKey: ["leaderboard"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getLeaderboard();
+    },
+    enabled: !!actor && !actorFetching,
+    staleTime: 60_000,
+  });
+}
+
+export function useGetOrCreateBalance(enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<bigint>({
+    queryKey: ["orCreateBalance"],
+    queryFn: async () => {
+      if (!actor) return BigInt(0);
+      return actor.getOrCreateBalance();
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 60_000,
+  });
+}
+
+export function useIsCallerAdmin(enabled = true) {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ["isAdmin"],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isCallerAdmin();
+    },
+    enabled: !!actor && !actorFetching && enabled,
+    staleTime: 300_000,
+  });
+}
+
+export function usePlaceBet() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      marketId,
+      position,
+      amount,
+    }: {
+      marketId: bigint;
+      position: BetPosition;
+      amount: bigint;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.placeBet(marketId, position, amount);
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["markets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["market", vars.marketId.toString()],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["marketBets", vars.marketId.toString()],
+      });
+      queryClient.invalidateQueries({ queryKey: ["userBets"] });
+      queryClient.invalidateQueries({ queryKey: ["ccBalance"] });
+      queryClient.invalidateQueries({ queryKey: ["orCreateBalance"] });
+    },
+  });
+}
+
+export function useCreateMarket() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      title,
+      description,
+      category,
+      imageUrl,
+      deadline,
+    }: {
+      title: string;
+      description: string;
+      category: MarketCategory;
+      imageUrl: string;
+      deadline: bigint;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.createMarket(
+        title,
+        description,
+        category,
+        imageUrl,
+        deadline,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["markets"] });
+    },
+  });
+}
+
+export function useResolveMarket() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      marketId,
+      outcome,
+    }: {
+      marketId: bigint;
+      outcome: boolean;
+    }) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.resolveMarket(marketId, outcome);
+    },
+    onSuccess: (_data, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["markets"] });
+      queryClient.invalidateQueries({
+        queryKey: ["market", vars.marketId.toString()],
+      });
+    },
+  });
+}
+
+export function useClaimReward() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (betId: bigint) => {
+      if (!actor) throw new Error("Actor not available");
+      return actor.claimReward(betId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userBets"] });
+      queryClient.invalidateQueries({ queryKey: ["ccBalance"] });
+      queryClient.invalidateQueries({ queryKey: ["orCreateBalance"] });
+    },
+  });
+}
+
+export { BetPosition };

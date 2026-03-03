@@ -89,6 +89,45 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface Transaction {
+    id: bigint;
+    to: Principal;
+    from: Principal;
+    note?: string;
+    timestamp: Time;
+    amount: bigint;
+}
+export interface LeaderboardEntry {
+    betsCount: bigint;
+    user: Principal;
+    totalLost: bigint;
+    totalWon: bigint;
+    profit: bigint;
+}
+export type Time = bigint;
+export interface Bet {
+    id: bigint;
+    claimed: boolean;
+    marketId: bigint;
+    bettor: Principal;
+    timestamp: Time;
+    position: BetPosition;
+    amount: bigint;
+}
+export interface Market {
+    id: bigint;
+    status: MarketStatus;
+    title: string;
+    creator: Principal;
+    totalYesPool: bigint;
+    resolvedOutcome?: boolean;
+    createdAt: Time;
+    description: string;
+    deadline: Time;
+    imageUrl: string;
+    category: MarketCategory;
+    totalNoPool: bigint;
+}
 export interface ReferralLink {
     id: bigint;
     tanggalDibuat: Time;
@@ -98,17 +137,24 @@ export interface ReferralLink {
     urlTujuan: string;
     jumlahKlik: bigint;
 }
-export type Time = bigint;
 export interface UserProfile {
     name: string;
 }
-export interface Transaction {
-    id: bigint;
-    to: Principal;
-    from: Principal;
-    note?: string;
-    timestamp: Time;
-    amount: bigint;
+export enum BetPosition {
+    no = "no",
+    yes = "yes"
+}
+export enum MarketCategory {
+    Technology = "Technology",
+    Entertainment = "Entertainment",
+    Crypto = "Crypto",
+    Politics = "Politics",
+    Sports = "Sports"
+}
+export enum MarketStatus {
+    resolved = "resolved",
+    active = "active",
+    cancelled = "cancelled"
 }
 export enum UserRole {
     admin = "admin",
@@ -120,23 +166,34 @@ export interface backendInterface {
     adminMintCC(to: Principal, amount: bigint, note: string | null): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     buatLink(kode: string, urlTujuan: string, deskripsi: string | null): Promise<ReferralLink>;
+    claimReward(betId: bigint): Promise<bigint>;
+    createMarket(title: string, description: string, category: MarketCategory, imageUrl: string, deadline: Time): Promise<Market>;
     getCCBalance(): Promise<bigint>;
     getCCTransactionHistory(_principal: Principal | null): Promise<Array<Transaction>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getKodeLink(kode: string): Promise<ReferralLink>;
+    getLeaderboard(): Promise<Array<LeaderboardEntry>>;
     getLinkByOwner(owner: Principal): Promise<Array<ReferralLink>>;
     getLinksByCurrentUser(): Promise<Array<ReferralLink>>;
+    getMarket(id: bigint): Promise<Market | null>;
+    getMarketBets(marketId: bigint): Promise<Array<Bet>>;
+    getMarkets(): Promise<Array<Market>>;
+    getMarketsByCategory(category: MarketCategory): Promise<Array<Market>>;
+    getOrCreateBalance(): Promise<bigint>;
+    getUserBets(): Promise<Array<Bet>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     hapusLink(kode: string): Promise<void>;
     incrementClickCount(kode: string): Promise<void>;
     isCallerAdmin(): Promise<boolean>;
+    placeBet(marketId: bigint, position: BetPosition, amount: bigint): Promise<Bet>;
     redirectLinkAndCount(kode: string): Promise<string>;
+    resolveMarket(marketId: bigint, outcome: boolean): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     sendCC(to: Principal, amount: bigint, note: string | null): Promise<void>;
     updateLinkData(kode: string, newUrlTujuan: string | null, newDeskripsi: string | null): Promise<ReferralLink>;
 }
-import type { ReferralLink as _ReferralLink, Time as _Time, Transaction as _Transaction, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { Bet as _Bet, BetPosition as _BetPosition, Market as _Market, MarketCategory as _MarketCategory, MarketStatus as _MarketStatus, ReferralLink as _ReferralLink, Time as _Time, Transaction as _Transaction, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -195,6 +252,34 @@ export class Backend implements backendInterface {
             return from_candid_ReferralLink_n4(this._uploadFile, this._downloadFile, result);
         }
     }
+    async claimReward(arg0: bigint): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.claimReward(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.claimReward(arg0);
+            return result;
+        }
+    }
+    async createMarket(arg0: string, arg1: string, arg2: MarketCategory, arg3: string, arg4: Time): Promise<Market> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.createMarket(arg0, arg1, to_candid_MarketCategory_n7(this._uploadFile, this._downloadFile, arg2), arg3, arg4);
+                return from_candid_Market_n9(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.createMarket(arg0, arg1, to_candid_MarketCategory_n7(this._uploadFile, this._downloadFile, arg2), arg3, arg4);
+            return from_candid_Market_n9(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getCCBalance(): Promise<bigint> {
         if (this.processError) {
             try {
@@ -212,43 +297,43 @@ export class Backend implements backendInterface {
     async getCCTransactionHistory(arg0: Principal | null): Promise<Array<Transaction>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getCCTransactionHistory(to_candid_opt_n7(this._uploadFile, this._downloadFile, arg0));
-                return from_candid_vec_n8(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.getCCTransactionHistory(to_candid_opt_n16(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getCCTransactionHistory(to_candid_opt_n7(this._uploadFile, this._downloadFile, arg0));
-            return from_candid_vec_n8(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.getCCTransactionHistory(to_candid_opt_n16(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_vec_n17(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserProfile();
-                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserProfile();
-            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n12(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n21(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n12(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n21(this._uploadFile, this._downloadFile, result);
         }
     }
     async getKodeLink(arg0: string): Promise<ReferralLink> {
@@ -265,46 +350,144 @@ export class Backend implements backendInterface {
             return from_candid_ReferralLink_n4(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getLeaderboard(): Promise<Array<LeaderboardEntry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getLeaderboard();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getLeaderboard();
+            return result;
+        }
+    }
     async getLinkByOwner(arg0: Principal): Promise<Array<ReferralLink>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getLinkByOwner(arg0);
-                return from_candid_vec_n14(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n23(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getLinkByOwner(arg0);
-            return from_candid_vec_n14(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n23(this._uploadFile, this._downloadFile, result);
         }
     }
     async getLinksByCurrentUser(): Promise<Array<ReferralLink>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getLinksByCurrentUser();
-                return from_candid_vec_n14(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n23(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getLinksByCurrentUser();
-            return from_candid_vec_n14(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n23(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMarket(arg0: bigint): Promise<Market | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMarket(arg0);
+                return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMarket(arg0);
+            return from_candid_opt_n24(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMarketBets(arg0: bigint): Promise<Array<Bet>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMarketBets(arg0);
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMarketBets(arg0);
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMarkets(): Promise<Array<Market>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMarkets();
+                return from_candid_vec_n30(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMarkets();
+            return from_candid_vec_n30(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getMarketsByCategory(arg0: MarketCategory): Promise<Array<Market>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getMarketsByCategory(to_candid_MarketCategory_n7(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_vec_n30(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getMarketsByCategory(to_candid_MarketCategory_n7(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_vec_n30(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getOrCreateBalance(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getOrCreateBalance();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getOrCreateBalance();
+            return result;
+        }
+    }
+    async getUserBets(): Promise<Array<Bet>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getUserBets();
+                return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getUserBets();
+            return from_candid_vec_n25(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getUserProfile(arg0);
-                return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getUserProfile(arg0);
-            return from_candid_opt_n11(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
         }
     }
     async hapusLink(arg0: string): Promise<void> {
@@ -349,6 +532,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async placeBet(arg0: bigint, arg1: BetPosition, arg2: bigint): Promise<Bet> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.placeBet(arg0, to_candid_BetPosition_n31(this._uploadFile, this._downloadFile, arg1), arg2);
+                return from_candid_Bet_n26(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.placeBet(arg0, to_candid_BetPosition_n31(this._uploadFile, this._downloadFile, arg1), arg2);
+            return from_candid_Bet_n26(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async redirectLinkAndCount(arg0: string): Promise<string> {
         if (this.processError) {
             try {
@@ -360,6 +557,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.redirectLinkAndCount(arg0);
+            return result;
+        }
+    }
+    async resolveMarket(arg0: bigint, arg1: boolean): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.resolveMarket(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.resolveMarket(arg0, arg1);
             return result;
         }
     }
@@ -406,22 +617,85 @@ export class Backend implements backendInterface {
         }
     }
 }
+function from_candid_BetPosition_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _BetPosition): BetPosition {
+    return from_candid_variant_n29(_uploadFile, _downloadFile, value);
+}
+function from_candid_Bet_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Bet): Bet {
+    return from_candid_record_n27(_uploadFile, _downloadFile, value);
+}
+function from_candid_MarketCategory_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _MarketCategory): MarketCategory {
+    return from_candid_variant_n15(_uploadFile, _downloadFile, value);
+}
+function from_candid_MarketStatus_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _MarketStatus): MarketStatus {
+    return from_candid_variant_n12(_uploadFile, _downloadFile, value);
+}
+function from_candid_Market_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Market): Market {
+    return from_candid_record_n10(_uploadFile, _downloadFile, value);
+}
 function from_candid_ReferralLink_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _ReferralLink): ReferralLink {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_Transaction_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Transaction): Transaction {
-    return from_candid_record_n10(_uploadFile, _downloadFile, value);
+function from_candid_Transaction_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Transaction): Transaction {
+    return from_candid_record_n19(_uploadFile, _downloadFile, value);
 }
-function from_candid_UserRole_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n13(_uploadFile, _downloadFile, value);
+function from_candid_UserRole_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
+    return from_candid_variant_n22(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+function from_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n24(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Market]): Market | null {
+    return value.length === 0 ? null : from_candid_Market_n9(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_record_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
+    status: _MarketStatus;
+    title: string;
+    creator: Principal;
+    totalYesPool: bigint;
+    resolvedOutcome: [] | [boolean];
+    createdAt: _Time;
+    description: string;
+    deadline: _Time;
+    imageUrl: string;
+    category: _MarketCategory;
+    totalNoPool: bigint;
+}): {
+    id: bigint;
+    status: MarketStatus;
+    title: string;
+    creator: Principal;
+    totalYesPool: bigint;
+    resolvedOutcome?: boolean;
+    createdAt: Time;
+    description: string;
+    deadline: Time;
+    imageUrl: string;
+    category: MarketCategory;
+    totalNoPool: bigint;
+} {
+    return {
+        id: value.id,
+        status: from_candid_MarketStatus_n11(_uploadFile, _downloadFile, value.status),
+        title: value.title,
+        creator: value.creator,
+        totalYesPool: value.totalYesPool,
+        resolvedOutcome: record_opt_to_undefined(from_candid_opt_n13(_uploadFile, _downloadFile, value.resolvedOutcome)),
+        createdAt: value.createdAt,
+        description: value.description,
+        deadline: value.deadline,
+        imageUrl: value.imageUrl,
+        category: from_candid_MarketCategory_n14(_uploadFile, _downloadFile, value.category),
+        totalNoPool: value.totalNoPool
+    };
+}
+function from_candid_record_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
     to: Principal;
     from: Principal;
@@ -442,6 +716,33 @@ function from_candid_record_n10(_uploadFile: (file: ExternalBlob) => Promise<Uin
         from: value.from,
         note: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.note)),
         timestamp: value.timestamp,
+        amount: value.amount
+    };
+}
+function from_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
+    claimed: boolean;
+    marketId: bigint;
+    bettor: Principal;
+    timestamp: _Time;
+    position: _BetPosition;
+    amount: bigint;
+}): {
+    id: bigint;
+    claimed: boolean;
+    marketId: bigint;
+    bettor: Principal;
+    timestamp: Time;
+    position: BetPosition;
+    amount: bigint;
+} {
+    return {
+        id: value.id,
+        claimed: value.claimed,
+        marketId: value.marketId,
+        bettor: value.bettor,
+        timestamp: value.timestamp,
+        position: from_candid_BetPosition_n28(_uploadFile, _downloadFile, value.position),
         amount: value.amount
     };
 }
@@ -472,7 +773,29 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         jumlahKlik: value.jumlahKlik
     };
 }
-function from_candid_variant_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    resolved: null;
+} | {
+    active: null;
+} | {
+    cancelled: null;
+}): MarketStatus {
+    return "resolved" in value ? MarketStatus.resolved : "active" in value ? MarketStatus.active : "cancelled" in value ? MarketStatus.cancelled : value;
+}
+function from_candid_variant_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    Technology: null;
+} | {
+    Entertainment: null;
+} | {
+    Crypto: null;
+} | {
+    Politics: null;
+} | {
+    Sports: null;
+}): MarketCategory {
+    return "Technology" in value ? MarketCategory.Technology : "Entertainment" in value ? MarketCategory.Entertainment : "Crypto" in value ? MarketCategory.Crypto : "Politics" in value ? MarketCategory.Politics : "Sports" in value ? MarketCategory.Sports : value;
+}
+function from_candid_variant_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -481,11 +804,30 @@ function from_candid_variant_n13(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_vec_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_ReferralLink>): Array<ReferralLink> {
+function from_candid_variant_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    no: null;
+} | {
+    yes: null;
+}): BetPosition {
+    return "no" in value ? BetPosition.no : "yes" in value ? BetPosition.yes : value;
+}
+function from_candid_vec_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Transaction>): Array<Transaction> {
+    return value.map((x)=>from_candid_Transaction_n18(_uploadFile, _downloadFile, x));
+}
+function from_candid_vec_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_ReferralLink>): Array<ReferralLink> {
     return value.map((x)=>from_candid_ReferralLink_n4(_uploadFile, _downloadFile, x));
 }
-function from_candid_vec_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Transaction>): Array<Transaction> {
-    return value.map((x)=>from_candid_Transaction_n9(_uploadFile, _downloadFile, x));
+function from_candid_vec_n25(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Bet>): Array<Bet> {
+    return value.map((x)=>from_candid_Bet_n26(_uploadFile, _downloadFile, x));
+}
+function from_candid_vec_n30(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Market>): Array<Market> {
+    return value.map((x)=>from_candid_Market_n9(_uploadFile, _downloadFile, x));
+}
+function to_candid_BetPosition_n31(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BetPosition): _BetPosition {
+    return to_candid_variant_n32(_uploadFile, _downloadFile, value);
+}
+function to_candid_MarketCategory_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: MarketCategory): _MarketCategory {
+    return to_candid_variant_n8(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n3(_uploadFile, _downloadFile, value);
@@ -493,7 +835,7 @@ function to_candid_UserRole_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint
 function to_candid_opt_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
     return value === null ? candid_none() : candid_some(value);
 }
-function to_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Principal | null): [] | [Principal] {
+function to_candid_opt_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Principal | null): [] | [Principal] {
     return value === null ? candid_none() : candid_some(value);
 }
 function to_candid_variant_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): {
@@ -509,6 +851,40 @@ function to_candid_variant_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         user: null
     } : value == UserRole.guest ? {
         guest: null
+    } : value;
+}
+function to_candid_variant_n32(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: BetPosition): {
+    no: null;
+} | {
+    yes: null;
+} {
+    return value == BetPosition.no ? {
+        no: null
+    } : value == BetPosition.yes ? {
+        yes: null
+    } : value;
+}
+function to_candid_variant_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: MarketCategory): {
+    Technology: null;
+} | {
+    Entertainment: null;
+} | {
+    Crypto: null;
+} | {
+    Politics: null;
+} | {
+    Sports: null;
+} {
+    return value == MarketCategory.Technology ? {
+        Technology: null
+    } : value == MarketCategory.Entertainment ? {
+        Entertainment: null
+    } : value == MarketCategory.Crypto ? {
+        Crypto: null
+    } : value == MarketCategory.Politics ? {
+        Politics: null
+    } : value == MarketCategory.Sports ? {
+        Sports: null
     } : value;
 }
 export interface CreateActorOptions {
