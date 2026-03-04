@@ -4,12 +4,12 @@ import { useInternetIdentity } from "@/hooks/useInternetIdentity";
 import { useCreateMarket, useGetMarkets } from "@/hooks/useQueries";
 import type { Principal } from "@icp-sdk/core/principal";
 import {
+  AlertTriangle,
   BarChart2,
   ChevronRight,
   Clock,
   ExternalLink,
   Loader2,
-  Mail,
   Plus,
   Search,
   TrendingUp,
@@ -21,10 +21,117 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
-// ── Sample/Mock Markets ───────────────────────────────────────────────────────
+// ── Unhedged API ──────────────────────────────────────────────────────────────
+
+const UNHEDGED_MARKETS_URL = "https://unhedged.gg/api/v1/markets";
+const UNHEDGED_TOKEN = "ak_MGZbA18VEeXakyPlrlcmPZgjiGNbnfuYBXTjZIBGbM7vqKaf";
 
 const makePrincipal = (s: string): Principal =>
   ({ toString: () => s }) as unknown as Principal;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapUnhedgedMarket(raw: any, index: number): Market {
+  // Determine title from common API shapes
+  const title: string =
+    raw.question ??
+    raw.title ??
+    raw.name ??
+    raw.prompt ??
+    `Market #${index + 1}`;
+
+  // Description
+  const description: string =
+    raw.description ?? raw.subtitle ?? raw.details ?? "";
+
+  // Category mapping
+  const rawCategory: string = raw.category ?? raw.tag ?? "";
+  const categoryMap: Record<string, string> = {
+    crypto: "Crypto",
+    sports: "Sports",
+    politics: "Politics",
+    technology: "Technology",
+    tech: "Technology",
+    entertainment: "Entertainment",
+    news: "Politics",
+    finance: "Crypto",
+  };
+  const category: MarketCategory = (categoryMap[rawCategory.toLowerCase()] ??
+    "Crypto") as MarketCategory;
+
+  // Pool amounts — multiply by 100_000_000 to match ICP e8s format
+  const yesPool =
+    raw.yesPool ?? raw.yes_pool ?? raw.volumeYes ?? raw.volume_yes ?? 0;
+  const noPool =
+    raw.noPool ?? raw.no_pool ?? raw.volumeNo ?? raw.volume_no ?? 0;
+  const totalYesPool = BigInt(Math.round(Number(yesPool) * 100_000_000));
+  const totalNoPool = BigInt(Math.round(Number(noPool) * 100_000_000));
+
+  // Deadline — try closeTime / close_time / expiresAt / endDate in ms or ISO
+  const closeRaw =
+    raw.closeTime ??
+    raw.close_time ??
+    raw.expiresAt ??
+    raw.expires_at ??
+    raw.endDate ??
+    raw.end_date;
+  let deadlineMs: number;
+  if (closeRaw) {
+    if (typeof closeRaw === "number") {
+      // Could be seconds or milliseconds — if < 1e12, assume seconds
+      deadlineMs = closeRaw < 1e12 ? closeRaw * 1000 : closeRaw;
+    } else {
+      deadlineMs = new Date(String(closeRaw)).getTime();
+    }
+  } else {
+    // Default: 1 year from now
+    deadlineMs = Date.now() + 365 * 24 * 60 * 60 * 1000;
+  }
+  const deadline = BigInt(deadlineMs * 1_000_000);
+
+  // Status
+  const rawStatus: string = String(
+    raw.status ?? raw.state ?? "active",
+  ).toLowerCase();
+  const status =
+    rawStatus === "resolved" || rawStatus === "closed"
+      ? MarketStatus.resolved
+      : rawStatus === "cancelled" || rawStatus === "canceled"
+        ? MarketStatus.cancelled
+        : MarketStatus.active;
+
+  // Image
+  const imageUrl: string =
+    raw.imageUrl ?? raw.image_url ?? raw.image ?? raw.banner ?? "";
+
+  // ID — use numeric string index as BigInt for stable IDs
+  const idRaw = raw.id ?? raw.marketId ?? raw.market_id ?? index + 1;
+  let id: bigint;
+  try {
+    id = BigInt(
+      typeof idRaw === "number"
+        ? idRaw
+        : String(idRaw).replace(/\D/g, "") || String(index + 1),
+    );
+  } catch {
+    id = BigInt(index + 1);
+  }
+
+  return {
+    id,
+    title,
+    description,
+    category,
+    status,
+    imageUrl,
+    totalYesPool,
+    totalNoPool,
+    deadline,
+    createdAt: BigInt(Date.now() * 1_000_000),
+    creator: makePrincipal("aaaaa-aa"),
+  };
+}
+
+// ── Fallback Sample Markets (absolute last resort) ────────────────────────────
 
 const SAMPLE_MARKETS: Market[] = [
   {
@@ -66,76 +173,6 @@ const SAMPLE_MARKETS: Market[] = [
     totalYesPool: BigInt(310000000000),
     totalNoPool: BigInt(90000000000),
     deadline: BigInt((new Date("2025-09-30").getTime() + 86400000) * 1_000_000),
-    createdAt: BigInt(Date.now() * 1_000_000),
-    creator: makePrincipal("aaaaa-aa"),
-  },
-  {
-    id: BigInt(4),
-    title: "Will Argentina win FIFA World Cup 2026?",
-    description:
-      "Argentina, as reigning champions, enters the 2026 World Cup as one of the top favorites. Will they defend their title?",
-    category: "Sports" as MarketCategory,
-    status: MarketStatus.active,
-    imageUrl: "",
-    totalYesPool: BigInt(520000000000),
-    totalNoPool: BigInt(480000000000),
-    deadline: BigInt((new Date("2026-07-20").getTime() + 86400000) * 1_000_000),
-    createdAt: BigInt(Date.now() * 1_000_000),
-    creator: makePrincipal("aaaaa-aa"),
-  },
-  {
-    id: BigInt(5),
-    title: "Will there be a US recession in 2025?",
-    description:
-      "Economic indicators show mixed signals. Will the US officially enter a recession (two consecutive quarters of negative GDP) in 2025?",
-    category: "Politics" as MarketCategory,
-    status: MarketStatus.active,
-    imageUrl: "",
-    totalYesPool: BigInt(290000000000),
-    totalNoPool: BigInt(410000000000),
-    deadline: BigInt((new Date("2025-12-31").getTime() + 86400000) * 1_000_000),
-    createdAt: BigInt(Date.now() * 1_000_000),
-    creator: makePrincipal("aaaaa-aa"),
-  },
-  {
-    id: BigInt(6),
-    title: "Will Apple release AR glasses in 2025?",
-    description:
-      "Following Apple Vision Pro, rumors suggest standalone AR glasses are in development. Will they launch in 2025?",
-    category: "Technology" as MarketCategory,
-    status: MarketStatus.active,
-    imageUrl: "",
-    totalYesPool: BigInt(140000000000),
-    totalNoPool: BigInt(260000000000),
-    deadline: BigInt((new Date("2025-12-31").getTime() + 86400000) * 1_000_000),
-    createdAt: BigInt(Date.now() * 1_000_000),
-    creator: makePrincipal("aaaaa-aa"),
-  },
-  {
-    id: BigInt(7),
-    title: "Will a new AI model surpass GPT-5?",
-    description:
-      "The AI race is heating up. Will any model from Google, Anthropic, Meta, or a newcomer outbench GPT-5 before end of 2025?",
-    category: "Technology" as MarketCategory,
-    status: MarketStatus.active,
-    imageUrl: "",
-    totalYesPool: BigInt(680000000000),
-    totalNoPool: BigInt(320000000000),
-    deadline: BigInt((new Date("2025-12-31").getTime() + 86400000) * 1_000_000),
-    createdAt: BigInt(Date.now() * 1_000_000),
-    creator: makePrincipal("aaaaa-aa"),
-  },
-  {
-    id: BigInt(8),
-    title: "Will Taylor Swift win Grammy Album of Year 2026?",
-    description:
-      "Taylor Swift's latest era has dominated charts globally. Will she add another Grammy Album of the Year win?",
-    category: "Entertainment" as MarketCategory,
-    status: MarketStatus.active,
-    imageUrl: "",
-    totalYesPool: BigInt(370000000000),
-    totalNoPool: BigInt(230000000000),
-    deadline: BigInt((new Date("2026-02-28").getTime() + 86400000) * 1_000_000),
     createdAt: BigInt(Date.now() * 1_000_000),
     creator: makePrincipal("aaaaa-aa"),
   },
@@ -576,13 +613,65 @@ export default function MarketsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
-  const { data: backendMarkets, isLoading } = useGetMarkets();
+  // Unhedged API state
+  const [unhedgedMarkets, setUnhedgedMarkets] = useState<Market[]>([]);
+  const [unhedgedLoading, setUnhedgedLoading] = useState(true);
+  const [unhedgedError, setUnhedgedError] = useState<string | null>(null);
 
-  // Use backend data if available, else sample data
+  const { data: backendMarkets, isLoading: backendLoading } = useGetMarkets();
+
+  // Fetch from Unhedged API on mount
+  useEffect(() => {
+    let cancelled = false;
+    setUnhedgedLoading(true);
+    setUnhedgedError(null);
+
+    fetch(UNHEDGED_MARKETS_URL, {
+      headers: {
+        Authorization: `Bearer ${UNHEDGED_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        if (cancelled) return;
+        // The response may be an array or wrapped in { markets: [], data: [], items: [] }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const rawList: any[] = Array.isArray(json)
+          ? json
+          : Array.isArray(json?.markets)
+            ? json.markets
+            : Array.isArray(json?.data)
+              ? json.data
+              : Array.isArray(json?.items)
+                ? json.items
+                : [];
+        const mapped = rawList.map((raw, i) => mapUnhedgedMarket(raw, i));
+        setUnhedgedMarkets(mapped);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        const msg = err instanceof Error ? err.message : "Unknown error";
+        setUnhedgedError(msg);
+      })
+      .finally(() => {
+        if (!cancelled) setUnhedgedLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const isLoading = unhedgedLoading || backendLoading;
+
+  // Priority: Unhedged > Backend > Sample fallback
   const allMarkets = useMemo(() => {
+    if (unhedgedMarkets.length > 0) return unhedgedMarkets;
     if (backendMarkets && backendMarkets.length > 0) return backendMarkets;
     return SAMPLE_MARKETS;
-  }, [backendMarkets]);
+  }, [unhedgedMarkets, backendMarkets]);
 
   const filteredMarkets = useMemo(() => {
     let list = allMarkets;
@@ -620,7 +709,7 @@ export default function MarketsPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
           <div className="markets-hero-eyebrow mb-6 animate-fade-in-down inline-flex">
             <TrendingUp className="w-3.5 h-3.5" />
-            Prediction Markets · ICP Protocol
+            Prediction Markets · Powered by Unhedged
           </div>
 
           <h1 className="markets-hero-headline animate-fade-in-up">
@@ -665,23 +754,37 @@ export default function MarketsPage() {
       <section className="identity-section relative">
         <div className="identity-section-divider" />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Unhedged API info note */}
-          <div className="unhedged-info-note mb-6">
-            <Zap className="w-3.5 h-3.5 shrink-0" />
-            <span>
-              External bets also available via <strong>Unhedged API</strong> on
-              each market page.
-            </span>
-            <a
-              href="https://unhedged.gg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="unhedged-info-link"
+          {/* Error banner: show when Unhedged fetch fails */}
+          {unhedgedError && (
+            <div
+              className="unhedged-error-banner mb-6"
+              data-ocid="markets.error_state"
             >
-              unhedged.gg
-              <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>
+                Could not load Unhedged markets. Showing local markets.
+              </span>
+            </div>
+          )}
+
+          {/* Powered by Unhedged note */}
+          {!unhedgedError && (
+            <div className="unhedged-info-note mb-6">
+              <Zap className="w-3.5 h-3.5 shrink-0" />
+              <span>
+                Markets powered by <strong>Unhedged API</strong>
+              </span>
+              <a
+                href="https://unhedged.gg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="unhedged-info-link"
+              >
+                unhedged.gg
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          )}
 
           {/* Controls row */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">

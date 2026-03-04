@@ -6315,4 +6315,20 @@
   .unhedged-info-link:hover {
     color: oklch(0.88 0.14 78);
   }
+
+  .unhedged-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    background: oklch(0.72 0.14 55 / 0.08);
+    border: 1px solid oklch(0.72 0.14 55 / 0.3);
+    color: oklch(0.78 0.1 55);
+  }
+
+  .unhedged-error-banner svg {
+    color: oklch(0.76 0.13 55);
+  }
 }
