@@ -86,6 +86,13 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
             <a href="/markets" className="identity-nav-link">
               Markets
             </a>
+            <a
+              href="/launchpad"
+              className="identity-nav-link"
+              data-ocid="nav.launchpad.link"
+            >
+              Launchpad
+            </a>
             <a href="/leaderboard" className="identity-nav-link">
               Leaderboard
             </a>
@@ -94,6 +101,9 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
             </a>
             <a href="/wallet" className="identity-nav-link">
               Wallet
+            </a>
+            <a href="/staking" className="identity-nav-link">
+              Staking
             </a>
             <button
               type="button"

@@ -36,139 +36,147 @@ interface Platform {
 const PLATFORMS: Platform[] = [
   // Exchanges
   {
-    name: "Bybit",
+    name: "Binance",
     category: "Exchange",
-    description: "Spot trading CC/USDT tersedia di pasar global.",
-    url: "https://www.bybit.com",
+    description: "ICP/USDT spot trading tersedia di pasar global Binance.",
+    url: "https://www.binance.com",
   },
   {
-    name: "MEXC",
+    name: "Coinbase",
     category: "Exchange",
-    description: "CC/USDT trading pair aktif di platform MEXC.",
-    url: "https://www.mexc.com",
+    description: "ICP listed on Coinbase exchange untuk retail dan institusi.",
+    url: "https://www.coinbase.com",
+  },
+  {
+    name: "Bybit",
+    category: "Exchange",
+    description: "ICP/USDT spot trading aktif di platform Bybit.",
+    url: "https://www.bybit.com",
   },
   {
     name: "KuCoin",
     category: "Exchange",
-    description: "CC tersedia di pasar spot KuCoin.",
+    description: "ICP tersedia di pasar spot KuCoin.",
     url: "https://www.kucoin.com",
-  },
-  {
-    name: "Gate.io",
-    category: "Exchange",
-    description: "List CC dengan pasangan CC/USDT.",
-    url: "https://www.gate.io",
-  },
-  {
-    name: "Kraken",
-    category: "Exchange",
-    description: "Mendukung listing & trading CC.",
-    url: "https://www.kraken.com",
   },
   {
     name: "OKX",
     category: "Exchange",
-    description: "CC/USDT spot trading aktif di OKX.",
+    description: "ICP/USDT spot trading aktif di OKX.",
     url: "https://www.okx.com",
+  },
+  {
+    name: "Kraken",
+    category: "Exchange",
+    description: "Mendukung listing & trading ICP.",
+    url: "https://www.kraken.com",
+  },
+  {
+    name: "Gate.io",
+    category: "Exchange",
+    description: "ICP/USDT trading pair tersedia di Gate.io.",
+    url: "https://www.gate.io",
+  },
+  {
+    name: "MEXC",
+    category: "Exchange",
+    description: "ICP/USDT pair tersedia di platform MEXC.",
+    url: "https://www.mexc.com",
   },
 
   // Institutional Custody
   {
+    name: "Coinbase Custody",
+    category: "Institutional Custody",
+    description: "Institutional custody untuk aset ICP dari Coinbase.",
+    url: "https://custody.coinbase.com",
+  },
+  {
     name: "BitGo",
     category: "Institutional Custody",
-    description: "Penyimpanan tingkat institusional untuk aset CC.",
+    description: "Enterprise wallet & custody untuk aset ICP.",
     url: "https://www.bitgo.com",
   },
   {
-    name: "Blockdaemon",
+    name: "Anchorage Digital",
     category: "Institutional Custody",
-    description: "Provider self-custody & infrastruktur node Canton.",
-    url: "https://blockdaemon.com",
+    description: "Regulated digital asset bank yang mendukung ICP.",
+    url: "https://www.anchorage.com",
   },
   {
-    name: "Copper",
+    name: "Fireblocks",
     category: "Institutional Custody",
-    description: "Custody & layanan manajemen aset digital.",
-    url: "https://copper.co",
-  },
-  {
-    name: "Dfns",
-    category: "Institutional Custody",
-    description: "Enterprise wallet infrastructure untuk institusi.",
-    url: "https://www.dfns.co",
-  },
-  {
-    name: "Unit410",
-    category: "Institutional Custody",
-    description: "Enterprise-grade wallet & validator services.",
-    url: "https://unit410.com",
-  },
-  {
-    name: "Zodia Custody",
-    category: "Institutional Custody",
-    description: "Institutional custodian yang mendukung CC.",
-    url: "https://zodia-custody.com",
+    description: "Institutional digital asset platform mendukung ICP.",
+    url: "https://www.fireblocks.com",
   },
 
   // Retail Wallet
   {
-    name: "Bron Wallet",
+    name: "NNS Dapp",
     category: "Retail Wallet",
-    description: "Dompet non-custodial untuk penyimpanan CC.",
-    url: "https://bronwallet.com",
+    description:
+      "Official Internet Computer governance & wallet dApp untuk ICP.",
+    url: "https://nns.ic0.app",
   },
   {
-    name: "Console Wallet",
+    name: "Plug Wallet",
     category: "Retail Wallet",
-    description: "Wallet dengan dukungan penuh untuk CC.",
-    url: "https://consolewallet.com",
+    description: "Browser wallet extension untuk ICP & Internet Computer.",
+    url: "https://plugwallet.ooo",
   },
   {
-    name: "Loop",
+    name: "Stoic Wallet",
     category: "Retail Wallet",
-    description: "Wallet retail dengan akses mudah ke CC.",
-    url: "https://loop.top",
+    description: "Web wallet untuk ICP dan ICRC tokens.",
+    url: "https://www.stoicwallet.com",
   },
   {
-    name: "Republic Wallet",
+    name: "AstroX ME",
     category: "Retail Wallet",
-    description: "Dompet yang mendukung pengelolaan CC.",
-    url: "https://republic.com",
+    description: "Mobile wallet untuk Internet Computer.",
+    url: "https://astrox.me",
   },
   {
-    name: "Send Wallet",
+    name: "ICLight",
     category: "Retail Wallet",
-    description: "Wallet retail & pengelolaan aset CC.",
-    url: "https://sendwallet.net",
-  },
-  {
-    name: "Zoro Wallet",
-    category: "Retail Wallet",
-    description: "Wallet retail dengan fitur swap CC terintegrasi.",
-    url: "https://zorowallet.com",
-  },
-  {
-    name: "Cantor8",
-    category: "Retail Wallet",
-    description: "Wallet yang mendukung ekosistem Canton Network.",
-    url: "https://cantor8.com",
+    description: "Community wallet mendukung ekosistem ICP.",
+    url: "https://iclight.io",
   },
 
   // Hardware Wallet
   {
-    name: "Cypherock X1",
+    name: "Ledger",
     category: "Hardware Wallet",
-    description: "Hardware wallet mendukung CIP-56, standar token Canton.",
-    url: "https://www.cypherock.com",
+    description: "Hardware wallet mendukung ICP via Ledger Live.",
+    url: "https://www.ledger.com",
+  },
+  {
+    name: "Trezor",
+    category: "Hardware Wallet",
+    description: "Hardware wallet dengan dukungan ICP.",
+    url: "https://trezor.io",
   },
 
   // Developer
   {
-    name: "Digital Asset Wallet SDK",
+    name: "DFINITY SDK",
     category: "Developer",
     description:
-      "SDK resmi untuk integrasi wallet & pengembang agar dapat mendukung Canton Network secara luas.",
-    url: "https://www.digitalasset.com",
+      "Official Motoko & Rust SDK untuk membangun di Internet Computer.",
+    url: "https://sdk.dfinity.org",
+  },
+  {
+    name: "Internet Computer GitHub",
+    category: "Developer",
+    description: "Source code dan tools resmi untuk ICP development.",
+    url: "https://github.com/dfinity",
+  },
+  {
+    name: "Candid",
+    category: "Developer",
+    description:
+      "Interface description language untuk IC canisters dan interoperabilitas.",
+    url: "https://internetcomputer.org/docs/current/developer-docs/smart-contracts/candid/candid-concepts",
   },
 ];
 
@@ -230,11 +238,11 @@ const CATEGORY_CONFIG: Record<
 };
 
 const STATS = [
-  { label: "Exchanges", count: 6, icon: TrendingUp },
-  { label: "Institutional Custody", count: 6, icon: Shield },
-  { label: "Retail Wallets", count: 7, icon: Wallet },
-  { label: "Hardware Wallets", count: 1, icon: HardDrive },
-  { label: "Developer SDKs", count: 1, icon: Code2 },
+  { label: "Exchanges", count: 8, icon: TrendingUp },
+  { label: "Institutional Custody", count: 4, icon: Shield },
+  { label: "Retail Wallets", count: 5, icon: Wallet },
+  { label: "Hardware Wallets", count: 2, icon: HardDrive },
+  { label: "Developer SDKs", count: 3, icon: Code2 },
 ];
 
 // ── CategoryBadge ──────────────────────────────────────────────────────────────
@@ -367,16 +375,20 @@ function EcoNavBar() {
           <div className="hidden md:flex items-center gap-1">
             {[
               { label: "Identity", href: "/" },
+              { label: "Markets", href: "/markets" },
+              { label: "Launchpad", href: "/launchpad" },
               { label: "Ecosystem", href: "/ecosystem" },
               { label: "Wallet", href: "/wallet" },
               { label: "Integration", href: "/integration" },
-              { label: "Dev Docs", href: "/developer" },
-              { label: "Featured Apps", href: "/featured-apps" },
             ].map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={`identity-nav-link ${link.href === "/ecosystem" ? "eco-nav-active" : ""}`}
+                data-ocid={`nav.${link.label
+                  .toLowerCase()
+                  .replace(/\s+/g, "_")
+                  .replace(/[^a-z0-9_]/g, "")}.link`}
               >
                 {link.label}
               </a>
@@ -452,18 +464,18 @@ export default function EcosystemDirectoryPage() {
               className="identity-headline animate-fade-in-up"
               style={{ animationDelay: "0.1s" }}
             >
-              ICP Protocol
+              ICP Ecosystem &amp;
               <br />
-              <span className="eco-title-gradient">Ecosystem Directory</span>
+              <span className="eco-title-gradient">Partners Directory</span>
             </h1>
 
             <p
               className="identity-subheadline mt-6 max-w-2xl mx-auto animate-fade-in-up"
               style={{ animationDelay: "0.2s" }}
             >
-              Menyatukan semua partner resmi dan komunitas yang mendukung ICP
-              Protocol dalam satu halaman — exchange, wallet, custody, dan
-              developer tools.
+              Menyatukan semua partner resmi dan komunitas yang mendukung
+              Internet Computer (ICP) dalam satu halaman — exchange, wallet,
+              custody, dan developer tools.
             </p>
 
             {/* Stats bar */}

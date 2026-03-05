@@ -99,6 +99,8 @@ function WalletNavBar({
           <div className="hidden md:flex items-center gap-1">
             {[
               { label: "Identity", href: "/", page: "identity" },
+              { label: "Markets", href: "/markets", page: "markets" },
+              { label: "Launchpad", href: "/launchpad", page: "launchpad" },
               { label: "Ecosystem", href: "/ecosystem", page: "ecosystem" },
               { label: "Wallet", href: "/wallet", page: "wallet" },
               {
@@ -106,17 +108,13 @@ function WalletNavBar({
                 href: "/integration",
                 page: "integration",
               },
-              { label: "Dev Docs", href: "/developer", page: "developer" },
-              {
-                label: "Featured Apps",
-                href: "/featured-apps",
-                page: "featured",
-              },
+              { label: "Staking", href: "/staking", page: "staking" },
             ].map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={`identity-nav-link ${activePage === link.page ? "eco-nav-active" : ""}`}
+                data-ocid={`nav.${link.label.toLowerCase().replace(/\s+/g, "_")}.link`}
               >
                 {link.label}
               </a>
@@ -214,19 +212,19 @@ function BalanceCard({
         <div>
           <div className="wallet-balance-amount">
             {balance !== undefined ? formatCC(balance) : "—"}
-            <span className="wallet-balance-unit">CC</span>
+            <span className="wallet-balance-unit">ICP</span>
           </div>
           <div className="wallet-balance-network">
             Internet Computer · ICP Token
           </div>
           <a
-            href="https://www.cantonscan.com/"
+            href="https://dashboard.internetcomputer.org"
             target="_blank"
             rel="noopener noreferrer"
             className="wallet-cantonscan-inline-link mt-3 inline-flex items-center gap-1.5"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            Check on CantonScan
+            Check on ICP Dashboard
           </a>
         </div>
       )}
@@ -288,13 +286,13 @@ function ReceiveCard({ principal }: { principal: string }) {
           )}
         </button>
         <a
-          href={"https://www.cantonscan.com/"}
+          href={"https://dashboard.internetcomputer.org"}
           target="_blank"
           rel="noopener noreferrer"
           className="wallet-cantonscan-btn flex-1 inline-flex items-center justify-center gap-2"
         >
           <ExternalLink className="w-3.5 h-3.5" />
-          View on CantonScan
+          View on ICP Dashboard
         </a>
       </div>
     </div>
@@ -575,16 +573,16 @@ function TransactionRow({
           {isSent ? "−" : "+"}
           {formatCC(tx.amount)}
         </div>
-        <div className="wallet-tx-unit">CC</div>
+        <div className="wallet-tx-unit">ICP</div>
         <a
-          href="https://www.cantonscan.com/"
+          href="https://dashboard.internetcomputer.org"
           target="_blank"
           rel="noopener noreferrer"
           className="wallet-tx-scan-link mt-1 inline-flex items-center gap-1"
-          title="View on CantonScan"
+          title="View on ICP Dashboard"
         >
           <ExternalLink className="w-3 h-3" />
-          <span className="text-xs">CantonScan</span>
+          <span className="text-xs">ICP Dashboard</span>
         </a>
       </div>
     </div>
@@ -648,7 +646,7 @@ function TransactionHistory({
           <h3 className="wallet-empty-title">No Transactions Yet</h3>
           <p className="wallet-empty-text">
             Your transaction history will appear here once you send or receive
-            CC.
+            ICP.
           </p>
         </div>
       ) : (

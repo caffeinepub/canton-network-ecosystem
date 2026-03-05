@@ -48,16 +48,21 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
           <div className="hidden md:flex items-center gap-1">
             {[
               { label: "Identity", href: "/" },
+              { label: "Markets", href: "/markets" },
+              { label: "Launchpad", href: "/launchpad" },
               { label: "Ecosystem", href: "/ecosystem" },
               { label: "Wallet", href: "/wallet" },
               { label: "Integration", href: "/integration" },
               { label: "Dev Docs", href: "/developer" },
-              { label: "Featured Apps", href: "/featured-apps" },
             ].map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={`identity-nav-link ${link.href === "/integration" ? "eco-nav-active" : ""}`}
+                data-ocid={`nav.${link.label
+                  .toLowerCase()
+                  .replace(/\s+/g, "_")
+                  .replace(/[^a-z0-9_]/g, "")}.link`}
               >
                 {link.label}
               </a>
@@ -175,20 +180,20 @@ function ArchDiagram() {
           <div className="ig-arch-box-icon">
             <Wallet className="w-5 h-5" />
           </div>
-          <div className="ig-arch-box-label">Wallet Gateway</div>
-          <div className="ig-arch-box-sub">splice-wallet-kernel</div>
+          <div className="ig-arch-box-label">Internet Identity</div>
+          <div className="ig-arch-box-sub">identity.ic0.app</div>
         </div>
         <div className="ig-arch-connector">
           <div className="ig-arch-line" />
           <ArrowRight className="w-4 h-4 ig-arch-arrow" />
-          <div className="ig-arch-connector-label">Ledger API</div>
+          <div className="ig-arch-connector-label">Agent JS</div>
         </div>
         <div className="ig-arch-box ig-arch-box-canton">
           <div className="ig-arch-box-icon">
             <Database className="w-5 h-5" />
           </div>
-          <div className="ig-arch-box-label">ICP Node</div>
-          <div className="ig-arch-box-sub">ICP Local Dev / Mainnet</div>
+          <div className="ig-arch-box-label">ICP Canister</div>
+          <div className="ig-arch-box-sub">Mainnet / Local Dev</div>
         </div>
       </div>
     </div>
@@ -203,28 +208,19 @@ const STEPS = [
     icon: GitBranch,
     title: "Setup Project",
     description:
-      "Clone the splice-wallet-kernel repository and install dependencies to get started.",
+      "Create a new ICP dApp project using the DFX SDK and install dependencies.",
     color: "blue",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          Clone the official Hyperledger Labs repository and install all
-          required dependencies using Yarn.
+          Create a new Internet Computer dApp project using the official DFX
+          tool and install required dependencies.
         </p>
         <CodeBlock
-          code={`git clone https://github.com/hyperledger-labs/splice-wallet-kernel.git
-cd splice-wallet-kernel`}
+          code={`npm create dfx-app@latest my-dapp
+cd my-dapp && npm install`}
           language="bash"
           title="Terminal"
-        />
-        <p className="ig-step-text">Install all dependencies:</p>
-        <CodeBlock
-          code={`# Install Yarn if not already installed
-npm install -g yarn
-
-# Install project dependencies
-yarn install`}
-          language="bash"
         />
         <div className="ig-step-prereq">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -232,9 +228,9 @@ yarn install`}
             <div className="ig-step-prereq-title">Prerequisites</div>
             <div className="ig-step-prereq-items">
               <span>Node.js 18+</span>
-              <span>Yarn 1.22+</span>
-              <span>Git</span>
-              <span>Docker (optional)</span>
+              <span>DFX SDK</span>
+              <span>Internet Identity</span>
+              <span>Plug Wallet (optional)</span>
             </div>
           </div>
         </div>
@@ -245,35 +241,35 @@ yarn install`}
     id: "build",
     step: "02",
     icon: Layers,
-    title: "Build All Modules",
+    title: "Install ICP SDK",
     description:
-      "Compile all packages including wallet-sdk, dapp-sdk, wallet-gateway, and core modules.",
+      "Install the ICP Agent JS SDK packages for authentication and canister communication.",
     color: "gold",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          Run the unified build command to compile all modules in the correct
-          dependency order.
+          Install the official ICP SDK packages for agent communication and
+          Internet Identity authentication.
         </p>
-        <CodeBlock code={"yarn build:all"} language="bash" title="Terminal" />
-        <p className="ig-step-text">
-          This builds the following packages in order:
-        </p>
+        <CodeBlock
+          code={
+            "npm install @dfinity/agent @dfinity/auth-client @dfinity/principal"
+          }
+          language="bash"
+          title="Terminal"
+        />
+        <p className="ig-step-text">This installs the following packages:</p>
         <div className="ig-module-list">
           {[
             {
-              name: "@splice-wallet/core",
-              desc: "Core cryptographic primitives",
+              name: "@dfinity/agent",
+              desc: "HTTP agent for ICP canister calls",
             },
             {
-              name: "@splice-wallet/wallet-sdk",
-              desc: "Wallet management SDK",
+              name: "@dfinity/auth-client",
+              desc: "Internet Identity authentication",
             },
-            { name: "@splice-wallet/dapp-sdk", desc: "dApp integration SDK" },
-            {
-              name: "wallet-gateway",
-              desc: "Gateway server for wallet-dApp bridge",
-            },
+            { name: "@dfinity/principal", desc: "Principal ID utilities" },
           ].map((m) => (
             <div key={m.name} className="ig-module-item">
               <CheckCircle2 className="w-3.5 h-3.5 ig-module-check" />
@@ -291,30 +287,40 @@ yarn install`}
     id: "canton",
     step: "03",
     icon: Database,
-    title: "Run Canton Local Dev Node",
+    title: "Configure Internet Identity",
     description:
-      "Start a local ICP development node to simulate the permissioned DLT environment.",
+      "Set up AuthClient to authenticate users with Internet Identity on ICP.",
     color: "green",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          Start the bundled ICP local development node. This spins up a minimal
-          ICP environment for testing.
+          Create an AuthClient instance and configure the Internet Identity
+          provider for user authentication.
         </p>
         <CodeBlock
-          code={"yarn start:canton"}
-          language="bash"
-          title="Terminal"
-        />
-        <p className="ig-step-text">Expected output on successful startup:</p>
-        <CodeBlock
-          code={`ICP node started
-Ledger API running on localhost:6865
-Participant node: participant1
-Domain: icp-local-dev
-✓ ICP node ready`}
-          language="text"
-          title="Expected Output"
+          code={`import { AuthClient } from "@dfinity/auth-client";
+
+export async function initAuth() {
+  const authClient = await AuthClient.create();
+  
+  // Check if already authenticated
+  if (await authClient.isAuthenticated()) {
+    const identity = authClient.getIdentity();
+    console.log("Already authenticated:", identity.getPrincipal().toString());
+    return authClient;
+  }
+
+  // Login with Internet Identity
+  await authClient.login({
+    identityProvider: "https://identity.ic0.app",
+    onSuccess: () => console.log("Login successful"),
+    onError: (err) => console.error("Login failed:", err),
+  });
+  
+  return authClient;
+}`}
+          language="typescript"
+          title="src/auth.ts"
         />
       </div>
     ),
@@ -323,41 +329,43 @@ Domain: icp-local-dev
     id: "gateway",
     step: "04",
     icon: Play,
-    title: "Run Wallet Gateway + Demo dApp",
+    title: "Create Actor",
     description:
-      "Start all services: the wallet gateway, demo dApp, and mock auth server simultaneously.",
+      "Create an ICP Actor to interact with your canister smart contract.",
     color: "purple",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          Launch all services with a single command. This starts the wallet
-          gateway, demo dApp frontend, and the mock auth server.
+          Use the authenticated identity to create an Actor that communicates
+          with your deployed ICP canister.
         </p>
-        <CodeBlock code={"yarn start:all"} language="bash" title="Terminal" />
-        <div className="ig-services-grid">
-          {[
-            { port: "3000", name: "Demo dApp", color: "blue" },
-            { port: "3001", name: "Wallet Gateway", color: "gold" },
-            { port: "3002", name: "Mock Auth Server", color: "green" },
-          ].map((s) => (
-            <div
-              key={s.port}
-              className={`ig-service-chip ig-service-chip-${s.color}`}
-            >
-              <span className="ig-service-port">:{s.port}</span>
-              <span className="ig-service-name">{s.name}</span>
-            </div>
-          ))}
-        </div>
+        <CodeBlock
+          code={`import { Actor, HttpAgent } from "@dfinity/agent";
+import { idlFactory } from "./declarations/backend";
+
+export async function createActor(identity: Identity) {
+  const agent = await HttpAgent.create({
+    identity,
+    host: "https://ic0.app",
+  });
+
+  return Actor.createActor(idlFactory, {
+    agent,
+    canisterId: process.env.VITE_CANISTER_ID ?? "",
+  });
+}`}
+          language="typescript"
+          title="src/actor.ts"
+        />
         <div className="ig-callout ig-callout-warning">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <div>
-            <div className="ig-callout-title">Caffeine Platform Note</div>
+            <div className="ig-callout-title">Local Development Note</div>
             <p className="ig-callout-text">
-              Jika Caffeine tidak support multi-service long running process,
-              jalankan Canton di server eksternal, di Caffeine hanya jalankan
-              dApp. Set <code className="ig-inline-code">gatewayUrl</code> ke
-              URL publik gateway-mu.
+              For local dev with{" "}
+              <code className="ig-inline-code">dfx start</code>, call{" "}
+              <code className="ig-inline-code">agent.fetchRootKey()</code> after
+              creating the agent. Never call this on mainnet.
             </p>
           </div>
         </div>
@@ -368,46 +376,53 @@ Domain: icp-local-dev
     id: "connect",
     step: "05",
     icon: Wallet,
-    title: "Connect Wallet Code",
+    title: "Build Frontend",
     description:
-      "Implement the wallet connection logic in your dApp using the splice-wallet dApp SDK.",
+      "Implement the Internet Identity login button in your React dApp.",
     color: "blue",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          Create a wallet client instance and implement the connect flow. The
-          SDK handles the secure session negotiation.
+          Create a React component with the Internet Identity login flow and
+          principal display.
         </p>
         <CodeBlock
-          code={`import { createWalletClient } from "@splice-wallet/dapp-sdk";
+          code={`import { useState } from "react";
+import { initAuth } from "./auth";
 
-const wallet = createWalletClient({
-  gatewayUrl: "http://localhost:3001",
-});
+export function LoginButton() {
+  const [principal, setPrincipal] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-export async function connectWallet() {
-  const session = await wallet.connect();
-  console.log("Connected account:", session.account);
-  return session;
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const authClient = await initAuth();
+      const identity = authClient.getIdentity();
+      setPrincipal(identity.getPrincipal().toString());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return principal ? (
+    <p>Connected: {principal.slice(0, 10)}…</p>
+  ) : (
+    <button onClick={handleLogin} disabled={loading}>
+      {loading ? "Connecting..." : "Connect with Internet Identity"}
+    </button>
+  );
 }`}
-          language="typescript"
-          title="src/connectWallet.ts"
-        />
-        <p className="ig-step-text">Use it in a React component:</p>
-        <CodeBlock
-          code={`<button onClick={connectWallet}>
-  Connect Canton Wallet
-</button>`}
           language="tsx"
-          title="React Component"
+          title="LoginButton.tsx"
         />
         <div className="ig-flow-steps">
           <div className="ig-flow-title">Connection Flow</div>
           {[
-            "dApp requests connect via wallet.connect()",
-            "Wallet Gateway opens a new session",
-            "User approves the connection request",
-            "Session account is returned to dApp",
+            "User clicks Connect with Internet Identity",
+            "Internet Identity popup opens",
+            "User authenticates with their anchor",
+            "Principal ID returned to dApp",
           ].map((step, i) => (
             <div key={step} className="ig-flow-step">
               <div className="ig-flow-step-num">{i + 1}</div>
@@ -422,38 +437,35 @@ export async function connectWallet() {
     id: "transaction",
     step: "06",
     icon: Zap,
-    title: "Submit Transaction",
-    description:
-      "Submit signed transactions to the Canton ledger via the wallet SDK.",
+    title: "Deploy to ICP",
+    description: "Deploy your dApp to the Internet Computer mainnet using DFX.",
     color: "gold",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          After connecting, submit transactions using the wallet SDK. The SDK
-          handles signing and submission to the ledger API.
+          Deploy your canister and frontend to the Internet Computer mainnet.
+          Make sure you have ICP cycles for deployment.
         </p>
         <CodeBlock
-          code={`await wallet.submitTransaction({
-  templateId: "YourTemplate",
-  payload: {
-    owner: session.account,
-    amount: 100
-  }
-});`}
-          language="typescript"
-          title="Submit Transaction"
+          code={`# Deploy to ICP mainnet
+dfx deploy --network ic
+
+# Check deployment status
+dfx canister --network ic status backend`}
+          language="bash"
+          title="Deploy to Mainnet"
         />
-        <p className="ig-step-text">The SDK internally performs:</p>
+        <p className="ig-step-text">The deployment process:</p>
         <div className="ig-sdk-steps">
           {[
             {
-              step: "Sign",
-              desc: "Signs the transaction with the session key",
+              step: "Build",
+              desc: "Compiles Motoko/Rust canister code to Wasm",
             },
-            { step: "Send", desc: "Sends to the Ledger API endpoint" },
+            { step: "Install", desc: "Uploads Wasm to Internet Computer" },
             {
-              step: "Commit",
-              desc: "Canton commits the contract to the ledger",
+              step: "Live",
+              desc: "Internet Computer commits canister to the network",
             },
           ].map((item) => (
             <div key={item.step} className="ig-sdk-step">
@@ -469,18 +481,18 @@ export async function connectWallet() {
     id: "explorer",
     step: "07",
     icon: ExternalLink,
-    title: "Check in Explorer",
+    title: "Check on ICP Dashboard",
     description:
-      "Verify your transactions on CantonScan or check ledger API logs for local nodes.",
+      "Verify your canister deployment and monitor activity on the ICP Dashboard.",
     color: "green",
     content: (
       <div className="space-y-4">
         <p className="ig-step-text">
-          For public ICP Protocol transactions, use CantonScan to verify and
-          inspect your submitted transactions.
+          Use the official ICP Dashboard to verify your deployment, inspect
+          canister activity, and monitor network statistics.
         </p>
         <a
-          href="https://www.cantonscan.com/"
+          href="https://dashboard.internetcomputer.org"
           target="_blank"
           rel="noopener noreferrer"
           className="ig-explorer-link"
@@ -490,23 +502,25 @@ export async function connectWallet() {
               <ExternalLink className="w-5 h-5" />
             </div>
             <div>
-              <div className="ig-explorer-name">CantonScan</div>
-              <div className="ig-explorer-url">www.cantonscan.com</div>
+              <div className="ig-explorer-name">ICP Dashboard</div>
+              <div className="ig-explorer-url">
+                dashboard.internetcomputer.org
+              </div>
             </div>
           </div>
           <ArrowRight className="w-4 h-4 ig-explorer-arrow" />
         </a>
         <p className="ig-step-text">
-          For local Canton dev nodes, check the ledger API logs:
+          For local dev, inspect canister status with DFX:
         </p>
         <CodeBlock
-          code={`# View Canton node logs
-yarn logs:canton
+          code={`# View canister info
+dfx canister info backend
 
-# Or check ledger API directly
-curl http://localhost:6865/v2/transactions`}
+# Check canister logs
+dfx canister logs backend`}
           language="bash"
-          title="Local Node Inspection"
+          title="Local Canister Inspection"
         />
       </div>
     ),
@@ -524,29 +538,26 @@ function ProductionSection() {
             Production Deployment
           </div>
           <h2 className="identity-section-title mt-3 text-center">
-            Deploy to Public Canton
+            Deploy to Internet Computer
           </h2>
           <p className="identity-section-subtitle mt-2 text-center max-w-xl mx-auto">
-            When moving from local development to production ICP Protocol,
-            update your gateway configuration.
+            When moving from local development to production ICP mainnet, update
+            your canister configuration and ensure you have enough cycles.
           </p>
         </div>
         <div className="ig-prod-grid">
           <div className="ig-prod-card">
-            <h3 className="ig-prod-card-title">Gateway Configuration</h3>
+            <h3 className="ig-prod-card-title">ICP Canister Configuration</h3>
             <CodeBlock
-              code={`// packages/wallet-gateway/config.ts
+              code={`// Production ICP configuration
 export const config = {
-  ledgerUrl: "https://your-public-canton-node",
-  authConfig: {
-    type: "oauth2",
-    clientId: "your-client-id",
-    scope: "openid ledger:write"
-  },
-  validatorEndpoint: "https://validator.canton-network.com"
+  icHost: "https://ic0.app",
+  identityProvider: "https://identity.ic0.app",
+  canisterId: process.env.VITE_CANISTER_ID ?? "",
+  ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
 };`}
               language="typescript"
-              title="config.ts"
+              title="src/config.ts"
             />
           </div>
           <div className="ig-prod-checklist">
@@ -555,13 +566,16 @@ export const config = {
               {[
                 {
                   done: true,
-                  item: "Update ledgerUrl to production Canton node",
+                  item: "Set IC host to https://ic0.app for mainnet",
                 },
-                { done: true, item: "Configure OAuth2 authentication" },
-                { done: true, item: "Set validator endpoint URL" },
-                { done: false, item: "Obtain API auth credentials" },
-                { done: false, item: "Configure network firewall rules" },
-                { done: false, item: "Enable TLS/SSL on all endpoints" },
+                { done: true, item: "Configure Internet Identity provider" },
+                { done: true, item: "Set canisterId from dfx deploy output" },
+                { done: false, item: "Obtain ICP cycles for deployment" },
+                {
+                  done: false,
+                  item: "Configure CORS for your frontend domain",
+                },
+                { done: false, item: "Remove fetchRootKey() for mainnet" },
                 { done: false, item: "Set up monitoring and alerting" },
               ].map((item) => (
                 <div key={item.item} className="ig-checklist-item">
@@ -613,24 +627,24 @@ export default function IntegrationGuidePage() {
               Developer Integration Guide
             </div>
             <h1 className="ig-hero-title">
-              Integrate ICP Wallet
+              ICP Integration Guide
               <br />
               <span className="identity-headline-accent">Step-by-Step</span>
             </h1>
             <p className="ig-hero-sub mt-6 max-w-xl">
-              Complete guide to integrating your dApp with Internet Computer
-              Protocol (ICP) using the splice-wallet-kernel from Hyperledger
-              Labs. Covers local dev to production deployment.
+              Connect your dApp to the Internet Computer using Internet Identity
+              and ICP Agent JS. Covers setup, authentication, canister calls,
+              and production deployment.
             </p>
             <div className="flex flex-wrap items-center gap-4 mt-10">
               <a
-                href="https://github.com/hyperledger-labs/splice-wallet-kernel"
+                href="https://github.com/dfinity"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="identity-cta-primary group"
               >
                 <GitBranch className="w-4 h-4" />
-                View Repository
+                View DFINITY GitHub
                 <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
               </a>
               <button

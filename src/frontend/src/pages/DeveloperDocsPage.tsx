@@ -44,16 +44,21 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
           <div className="hidden md:flex items-center gap-1">
             {[
               { label: "Identity", href: "/" },
+              { label: "Markets", href: "/markets" },
+              { label: "Launchpad", href: "/launchpad" },
               { label: "Ecosystem", href: "/ecosystem" },
               { label: "Wallet", href: "/wallet" },
               { label: "Integration", href: "/integration" },
               { label: "Dev Docs", href: "/developer" },
-              { label: "Featured Apps", href: "/featured-apps" },
             ].map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={`identity-nav-link ${link.href === "/developer" ? "eco-nav-active" : ""}`}
+                data-ocid={`nav.${link.label
+                  .toLowerCase()
+                  .replace(/\s+/g, "_")
+                  .replace(/[^a-z0-9_]/g, "")}.link`}
               >
                 {link.label}
               </a>
@@ -174,7 +179,7 @@ function SidebarNav({ activeSection }: { activeSection: string }) {
       </ul>
       <div className="dd-sidebar-footer">
         <a
-          href="https://github.com/hyperledger-labs/splice-wallet-kernel"
+          href="https://github.com/dfinity"
           target="_blank"
           rel="noopener noreferrer"
           className="dd-sidebar-ext-link"
@@ -273,7 +278,7 @@ export default function DeveloperDocsPage() {
             </h1>
             <p className="ig-hero-sub mt-5 max-w-lg">
               Copy-paste ready code snippets for integrating ICP Protocol wallet
-              functionality into your dApp using the splice-wallet SDK.
+              functionality into your dApp using the ICP Agent JS SDK.
             </p>
             <div className="flex flex-wrap items-center gap-3 mt-8">
               <button
@@ -313,15 +318,15 @@ export default function DeveloperDocsPage() {
                 badge="5 min"
               >
                 <p className="dd-body-text">
-                  Get up and running with the Canton wallet SDK in under 5
+                  Get up and running with the ICP Agent JS SDK in under 5
                   minutes.
                 </p>
                 <div className="dd-prereq-list">
                   <div className="dd-prereq-title">Prerequisites</div>
                   {[
                     "Node.js 18 or higher",
-                    "Yarn package manager",
-                    "Access to a Canton Network node (local or remote)",
+                    "npm or yarn package manager",
+                    "Internet Computer wallet (Internet Identity or Plug)",
                   ].map((req) => (
                     <div key={req} className="dd-prereq-item">
                       <Check className="w-3.5 h-3.5 dd-prereq-icon" />
@@ -330,12 +335,12 @@ export default function DeveloperDocsPage() {
                   ))}
                 </div>
                 <p className="dd-body-text mt-4">
-                  Three commands to get started:
+                  One command to install the ICP SDK:
                 </p>
                 <CodeBlock
-                  code={`git clone https://github.com/hyperledger-labs/splice-wallet-kernel.git
-cd splice-wallet-kernel
-yarn install && yarn build:all && yarn start:all`}
+                  code={
+                    "npm install @dfinity/agent @dfinity/principal @dfinity/candid"
+                  }
                   language="bash"
                   title="Terminal"
                 />
@@ -344,12 +349,13 @@ yarn install && yarn build:all && yarn start:all`}
               {/* Install SDK */}
               <DocSection id="install" icon={Package} title="Install SDK">
                 <p className="dd-body-text">
-                  Add the dApp SDK to your existing project using npm or yarn.
+                  Add the ICP Agent JS SDK to your existing project using npm or
+                  yarn.
                 </p>
                 <CodeBlock
-                  code={`npm install @splice-wallet/dapp-sdk
+                  code={`npm install @dfinity/agent @dfinity/auth-client @dfinity/principal @dfinity/candid
 # or
-yarn add @splice-wallet/dapp-sdk`}
+yarn add @dfinity/agent @dfinity/auth-client @dfinity/principal @dfinity/candid`}
                   language="bash"
                   title="Package Installation"
                 />
@@ -358,7 +364,7 @@ yarn add @splice-wallet/dapp-sdk`}
                   <div>
                     <div className="dd-info-title">TypeScript Support</div>
                     <p className="dd-info-text">
-                      The SDK includes TypeScript type definitions. No
+                      The ICP SDK includes TypeScript type definitions. No
                       additional <code className="ig-inline-code">@types</code>{" "}
                       package needed.
                     </p>
@@ -373,21 +379,25 @@ yarn add @splice-wallet/dapp-sdk`}
                 title="connectWallet.ts"
               >
                 <p className="dd-body-text">
-                  Create a wallet client and export the{" "}
+                  Create an <code className="ig-inline-code">AuthClient</code>{" "}
+                  and export the{" "}
                   <code className="ig-inline-code">connectWallet</code>{" "}
-                  function. This establishes a session with the Wallet Gateway.
+                  function. This authenticates users via Internet Identity.
                 </p>
                 <CodeBlock
-                  code={`import { createWalletClient } from "@splice-wallet/dapp-sdk";
-
-const wallet = createWalletClient({
-  gatewayUrl: "http://localhost:3001",
-});
+                  code={`import { AuthClient } from "@dfinity/auth-client";
 
 export async function connectWallet() {
-  const session = await wallet.connect();
-  console.log("Connected account:", session.account);
-  return session;
+  const authClient = await AuthClient.create();
+  await authClient.login({
+    identityProvider: "https://identity.ic0.app",
+    onSuccess: () => {
+      const identity = authClient.getIdentity();
+      const principal = identity.getPrincipal().toString();
+      console.log("Connected principal:", principal);
+    },
+  });
+  return authClient.getIdentity();
 }`}
                   language="typescript"
                   title="src/connectWallet.ts"
@@ -400,19 +410,19 @@ export async function connectWallet() {
                   </div>
                   {[
                     {
-                      param: "gatewayUrl",
+                      param: "identityProvider",
                       type: "string",
-                      desc: "URL of the running Wallet Gateway",
+                      desc: "URL of Internet Identity provider",
                     },
                     {
-                      param: "session.account",
-                      type: "string",
-                      desc: "Canton account address after connect",
+                      param: "identity.getPrincipal()",
+                      type: "Principal",
+                      desc: "ICP Principal ID after authentication",
                     },
                     {
-                      param: "session.token",
-                      type: "string",
-                      desc: "Session authentication token",
+                      param: "authClient.getIdentity()",
+                      type: "Identity",
+                      desc: "Authenticated identity for signing requests",
                     },
                   ].map((row) => (
                     <div key={row.param} className="dd-param-row">
@@ -431,15 +441,15 @@ export async function connectWallet() {
                 title="React Integration"
               >
                 <p className="dd-body-text">
-                  A complete React component that handles connection state,
-                  loading, and error conditions.
+                  A complete React component that handles Internet Identity
+                  connection state, loading, and error conditions.
                 </p>
                 <CodeBlock
                   code={`import { useState } from "react";
 import { connectWallet } from "./connectWallet";
 
 export function WalletConnectButton() {
-  const [account, setAccount] = useState<string | null>(null);
+  const [principal, setPrincipal] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -447,8 +457,8 @@ export function WalletConnectButton() {
     setLoading(true);
     setError(null);
     try {
-      const session = await connectWallet();
-      setAccount(session.account);
+      const identity = await connectWallet();
+      setPrincipal(identity.getPrincipal().toString());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Connection failed");
     } finally {
@@ -458,12 +468,12 @@ export function WalletConnectButton() {
 
   return (
     <div>
-      {account ? (
-        <p>Connected: {account}</p>
+      {principal ? (
+        <p>Connected: {principal}</p>
       ) : (
         <>
           <button onClick={handleConnect} disabled={loading}>
-            {loading ? "Connecting..." : "Connect Canton Wallet"}
+            {loading ? "Connecting..." : "Connect with Internet Identity"}
           </button>
           {error && <p className="error">{error}</p>}
         </>
@@ -483,43 +493,31 @@ export function WalletConnectButton() {
                 title="Submit Transaction"
               >
                 <p className="dd-body-text">
-                  After connecting, submit transactions to the Canton ledger.
-                  Always include error handling for production use.
+                  After connecting, submit transactions to the Internet Computer
+                  via an ICP actor. Always include error handling for production
+                  use.
                 </p>
                 <CodeBlock
-                  code={`import { connectWallet } from "./connectWallet";
+                  code={`import { Actor, HttpAgent } from "@dfinity/agent";
+import { idlFactory } from "./declarations/backend";
 
-async function sendTransaction() {
-  let session;
-  
-  try {
-    session = await connectWallet();
-  } catch (err) {
-    console.error("Failed to connect wallet:", err);
-    return;
-  }
+async function sendICP(recipientPrincipal: string, amount: bigint) {
+  const agent = await HttpAgent.create({ host: "https://ic0.app" });
+  const actor = Actor.createActor(idlFactory, {
+    agent,
+    canisterId: "your-canister-id",
+  });
 
-  try {
-    const result = await wallet.submitTransaction({
-      templateId: "Splice.Canton:Transfer",
-      payload: {
-        owner: session.account,
-        recipient: "canton::1220recipient...",
-        amount: 100,
-        currency: "CC",
-        note: "Payment for services"
-      }
-    });
+  const result = await actor.transfer({
+    to: Principal.fromText(recipientPrincipal),
+    amount,
+  });
 
-    console.log("Transaction committed:", result.transactionId);
-    return result;
-  } catch (err) {
-    console.error("Transaction failed:", err);
-    throw err;
-  }
+  console.log("Transaction result:", result);
+  return result;
 }`}
                   language="typescript"
-                  title="sendTransaction.ts"
+                  title="sendICP.ts"
                 />
                 <div className="dd-info-box">
                   <Terminal className="w-4 h-4 shrink-0 dd-info-icon" />
@@ -527,10 +525,10 @@ async function sendTransaction() {
                     <div className="dd-info-title">Transaction Flow</div>
                     <div className="dd-tx-flow">
                       {[
-                        "Sign locally",
-                        "Submit to Gateway",
-                        "Gateway forwards to Ledger API",
-                        "Canton commits",
+                        "Sign locally with agent identity",
+                        "Submit to ICP canister via Actor",
+                        "Actor forwards to Internet Computer",
+                        "Internet Computer commits",
                       ].map((step, i) => (
                         <div key={step} className="dd-tx-step">
                           <span className="dd-tx-num">{i + 1}</span>
@@ -612,22 +610,19 @@ async function sendTransaction() {
                 title="Production Config"
               >
                 <p className="dd-body-text">
-                  Update the gateway configuration file before deploying to the
-                  public Canton Network.
+                  Configure your ICP canister settings before deploying to the
+                  Internet Computer mainnet.
                 </p>
                 <CodeBlock
-                  code={`// packages/wallet-gateway/config.ts
+                  code={`// Production ICP configuration
 export const config = {
-  ledgerUrl: "https://your-public-canton-node",
-  authConfig: {
-    type: "oauth2",
-    clientId: "your-client-id",
-    scope: "openid ledger:write"
-  },
-  validatorEndpoint: "https://validator.canton-network.com"
+  icHost: "https://ic0.app",
+  identityProvider: "https://identity.ic0.app",
+  canisterId: process.env.VITE_CANISTER_ID ?? "",
+  ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai", // ICP Ledger
 };`}
                   language="typescript"
-                  title="packages/wallet-gateway/config.ts"
+                  title="src/config.ts"
                 />
                 <div className="dd-warning-box">
                   <Shield className="w-4 h-4 shrink-0" />
@@ -635,28 +630,24 @@ export const config = {
                     <div className="dd-warning-title">Security Notice</div>
                     <p className="dd-warning-text">
                       Never commit your{" "}
-                      <code className="ig-inline-code">clientId</code> or other
-                      secrets to version control. Use environment variables in
-                      production:{" "}
+                      <code className="ig-inline-code">canisterId</code> or
+                      other secrets to version control. Use environment
+                      variables in production:{" "}
                       <code className="ig-inline-code">
-                        process.env.CANTON_CLIENT_ID
+                        process.env.VITE_CANISTER_ID
                       </code>
                     </p>
                   </div>
                 </div>
                 <CodeBlock
-                  code={`// Recommended: use environment variables
-export const config = {
-  ledgerUrl: process.env.CANTON_LEDGER_URL ?? "http://localhost:6865",
-  authConfig: {
-    type: "oauth2",
-    clientId: process.env.CANTON_CLIENT_ID ?? "",
-    scope: "openid ledger:write"
-  },
-  validatorEndpoint: process.env.CANTON_VALIDATOR_URL ?? ""
-};`}
-                  language="typescript"
-                  title="config.ts (recommended)"
+                  code={`// Deploy to ICP mainnet
+dfx deploy --network ic
+
+// Or run locally
+dfx start --background
+dfx deploy`}
+                  language="bash"
+                  title="deployment (recommended)"
                 />
               </DocSection>
             </div>

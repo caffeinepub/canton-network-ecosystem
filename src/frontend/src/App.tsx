@@ -11,9 +11,11 @@ import EcosystemDirectoryPage from "./pages/EcosystemDirectoryPage";
 import FeaturedAppsPage from "./pages/FeaturedAppsPage";
 import IdentityPrototypePage from "./pages/IdentityPrototypePage";
 import IntegrationGuidePage from "./pages/IntegrationGuidePage";
+import LaunchpadPage from "./pages/LaunchpadPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import MarketDetailPage from "./pages/MarketDetailPage";
 import MarketsPage from "./pages/MarketsPage";
+import StakingPage from "./pages/StakingPage";
 import WalletPage from "./pages/WalletPage";
 
 // ── Root route ────────────────────────────────────────────────────────────────
@@ -89,6 +91,20 @@ const leaderboardRoute = createRoute({
   component: LeaderboardPage,
 });
 
+// ── Staking page (/staking) ────────────────────────────────────────────────────
+const stakingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/staking",
+  component: StakingPage,
+});
+
+// ── Launchpad page (/launchpad) ────────────────────────────────────────────────
+const launchpadRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/launchpad",
+  component: LaunchpadPage,
+});
+
 // ── Router ────────────────────────────────────────────────────────────────────
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -100,6 +116,8 @@ const routeTree = rootRoute.addChildren([
   marketsRoute,
   marketDetailRoute,
   leaderboardRoute,
+  stakingRoute,
+  launchpadRoute,
 ]);
 
 const router = createRouter({ routeTree });

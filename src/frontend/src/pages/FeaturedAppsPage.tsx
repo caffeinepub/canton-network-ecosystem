@@ -39,153 +39,138 @@ interface FeaturedApp {
 // ── Data ───────────────────────────────────────────────────────────────────────
 const FEATURED_APPS: FeaturedApp[] = [
   {
-    name: "CantonLoop",
+    name: "NNS Dapp",
     category: "DeFi & Wallet",
-    tagline: "The hub for Canton Network applications",
+    tagline: "Official Internet Computer governance hub",
     description:
-      "CantonLoop is the primary gateway and app hub for the Canton Network ecosystem, providing wallet management, app discovery, and DeFi access.",
+      "The Network Nervous System dApp is the official governance interface for the Internet Computer. Stake ICP, vote on proposals, and manage your neurons.",
     features: [
-      "App discovery",
-      "Wallet integration",
-      "DeFi access",
-      "Canton Network gateway",
+      "ICP staking",
+      "Governance voting",
+      "Neuron management",
+      "Token management",
     ],
-    url: "https://cantonloop.com",
+    url: "https://nns.ic0.app",
     featured: true,
   },
   {
-    name: "5N Lighthouse Explorer",
+    name: "ICPSwap",
+    category: "DeFi & Wallet",
+    tagline: "DEX for the Internet Computer ecosystem",
+    description:
+      "ICPSwap is the leading decentralized exchange on the Internet Computer, enabling token swaps, liquidity pools, and yield farming with ICP tokens.",
+    features: ["Token swaps", "Liquidity pools", "Yield farming", "ICP DeFi"],
+    url: "https://icpswap.com",
+    featured: true,
+  },
+  {
+    name: "ICP Dashboard",
     category: "Explorer",
-    tagline: "Canton Network blockchain explorer",
+    tagline: "Official Internet Computer analytics and explorer",
     description:
-      "5N Lighthouse is the official Canton Network transaction and block explorer, allowing users to inspect transactions, smart contracts, and participants.",
+      "The official dashboard for monitoring Internet Computer network statistics, canister activity, transaction history, and governance metrics.",
     features: [
-      "Transaction explorer",
-      "Block data",
-      "Smart contract viewer",
-      "Participant lookup",
-    ],
-    url: "https://lighthouse.cantonloop.com",
-    featured: true,
-  },
-  {
-    name: "Canton Network",
-    category: "Protocol",
-    tagline: "The global synchronization network",
-    description:
-      "The official Canton Network portal — a global synchronization layer for permissioned DLT applications used by financial institutions worldwide.",
-    features: [
-      "Global sync",
-      "Permissioned DLT",
-      "Institutional-grade",
-      "Interoperability",
-    ],
-    url: "https://www.canton.network",
-    featured: true,
-  },
-  {
-    name: "CantonScan",
-    category: "Explorer",
-    tagline: "Track and verify Canton transactions",
-    description:
-      "CantonScan provides transaction verification and tracking for Canton Network, giving users full transparency into on-ledger activity.",
-    features: [
-      "Transaction tracking",
-      "Address lookup",
-      "Token transfers",
       "Network stats",
+      "Transaction explorer",
+      "Canister info",
+      "Governance data",
     ],
-    url: "https://www.cantonscan.com",
-    featured: false,
+    url: "https://dashboard.internetcomputer.org",
+    featured: true,
   },
   {
-    name: "Modulo",
-    category: "Wallet",
-    tagline: "Institutional-grade Canton wallet",
-    description:
-      "Modulo is an enterprise-grade wallet and identity solution built natively for Canton Network, designed for financial institutions.",
-    features: [
-      "Enterprise wallet",
-      "Canton-native",
-      "Identity management",
-      "Multi-signature",
-    ],
-    url: "https://www.modulo.world",
-    featured: false,
-  },
-  {
-    name: "Splice",
-    category: "Infrastructure",
-    tagline: "Canton Network validator & infra toolkit",
-    description:
-      "Splice provides the open-source infrastructure and validator tooling for Canton Network, enabling participants to run nodes and build integrations.",
-    features: [
-      "Validator nodes",
-      "Open source",
-      "Node tooling",
-      "Network participation",
-    ],
-    url: "https://github.com/hyperledger-labs/splice",
-    featured: false,
-  },
-  {
-    name: "Digital Asset",
-    category: "Infrastructure",
-    tagline: "Builders of Canton & Daml",
-    description:
-      "Digital Asset is the company behind Canton Network and the Daml smart contract language. They provide the core SDKs and enterprise tooling.",
-    features: [
-      "Daml SDK",
-      "Canton core",
-      "Enterprise support",
-      "Developer tools",
-    ],
-    url: "https://www.digitalasset.com",
-    featured: false,
-  },
-  {
-    name: "Bron Wallet",
-    category: "Wallet",
-    tagline: "Non-custodial CC wallet",
-    description:
-      "Bron Wallet is a self-custody wallet designed for managing Canton (CC) tokens with a clean interface and focus on security.",
-    features: [
-      "Self-custody",
-      "CC support",
-      "Non-custodial",
-      "Easy onboarding",
-    ],
-    url: "https://bronwallet.com",
-    featured: false,
-  },
-  {
-    name: "Zoro Wallet",
-    category: "Wallet",
-    tagline: "Swap and store Canton assets",
-    description:
-      "Zoro Wallet is a retail-focused wallet with built-in swap features for Canton (CC) tokens and seamless Canton Network integration.",
-    features: [
-      "Token swap",
-      "Retail-friendly",
-      "CC storage",
-      "Canton integration",
-    ],
-    url: "https://zorowallet.com",
-    featured: false,
-  },
-  {
-    name: "Canton Community Hub",
+    name: "OpenChat",
     category: "Community",
-    tagline: "Community resources for Canton Network",
+    tagline: "Decentralized messaging on the Internet Computer",
     description:
-      "The Canton Community Hub aggregates news, guides, developer resources, and ecosystem updates for all things Canton Network.",
+      "OpenChat is a fully on-chain messaging application built on ICP, offering groups, channels, and crypto tipping — all stored on the blockchain.",
     features: [
-      "Community news",
-      "Developer guides",
-      "Ecosystem updates",
-      "Forums",
+      "On-chain messaging",
+      "Group chats",
+      "Crypto tipping",
+      "NFT avatars",
     ],
-    url: "https://canton.network/community",
+    url: "https://oc.app",
+    featured: true,
+  },
+  {
+    name: "Sonic DEX",
+    category: "DeFi & Wallet",
+    tagline: "Fast and secure token swaps on ICP",
+    description:
+      "Sonic is a decentralized exchange built on the Internet Computer Protocol, offering fast token swaps with near-zero fees.",
+    features: ["Token swaps", "Liquidity pools", "Low fees", "On-chain"],
+    url: "https://sonic.ooo",
+    featured: false,
+  },
+  {
+    name: "DSCVR",
+    category: "Community",
+    tagline: "Decentralized social platform on ICP",
+    description:
+      "DSCVR is a Web3 social network running entirely on the Internet Computer, featuring portals, tokenized communities, and NFT integration.",
+    features: ["Web3 social", "Portals", "NFT integration", "Token rewards"],
+    url: "https://dscvr.one",
+    featured: false,
+  },
+  {
+    name: "Plug Wallet",
+    category: "Wallet",
+    tagline: "Browser extension wallet for Internet Computer",
+    description:
+      "Plug is the most popular browser extension wallet for the Internet Computer, supporting ICP, ICRC tokens, NFTs, and dApp connections.",
+    features: [
+      "Browser extension",
+      "ICP & ICRC tokens",
+      "NFT support",
+      "dApp connector",
+    ],
+    url: "https://plugwallet.ooo",
+    featured: false,
+  },
+  {
+    name: "Entrepot",
+    category: "Infrastructure",
+    tagline: "ICP NFT marketplace",
+    description:
+      "Entrepot is the leading NFT marketplace on the Internet Computer, enabling users to buy, sell, and trade digital collectibles on-chain.",
+    features: [
+      "NFT trading",
+      "On-chain storage",
+      "Creator tools",
+      "ICP payments",
+    ],
+    url: "https://entrepot.app",
+    featured: false,
+  },
+  {
+    name: "DFINITY Foundation",
+    category: "Protocol",
+    tagline: "The team behind Internet Computer Protocol",
+    description:
+      "DFINITY Foundation is the non-profit organization that created and maintains the Internet Computer Protocol, providing grants, research, and developer tools.",
+    features: [
+      "ICP research",
+      "Developer grants",
+      "Open source",
+      "Protocol upgrades",
+    ],
+    url: "https://dfinity.org",
+    featured: false,
+  },
+  {
+    name: "Internet Computer Wiki",
+    category: "Infrastructure",
+    tagline: "Comprehensive documentation for ICP developers",
+    description:
+      "The official developer documentation and wiki for building on the Internet Computer — from getting started guides to advanced smart contract patterns.",
+    features: [
+      "Developer docs",
+      "Tutorials",
+      "API reference",
+      "Community guides",
+    ],
+    url: "https://internetcomputer.org/docs",
     featured: false,
   },
 ];
@@ -259,10 +244,11 @@ function NavBar({ onConnectWallet }: { onConnectWallet: () => void }) {
 
   const navLinks = [
     { label: "Identity", href: "/" },
+    { label: "Markets", href: "/markets" },
+    { label: "Launchpad", href: "/launchpad" },
     { label: "Ecosystem", href: "/ecosystem" },
     { label: "Wallet", href: "/wallet" },
     { label: "Integration", href: "/integration" },
-    { label: "Dev Docs", href: "/developer" },
     { label: "Featured Apps", href: "/featured-apps" },
   ];
 
@@ -570,9 +556,9 @@ export default function FeaturedAppsPage() {
               className="identity-subheadline mt-6 max-w-2xl mx-auto animate-fade-in-up"
               style={{ animationDelay: "0.2s" }}
             >
-              Discover the best applications, tools, and protocols built on ICP
-              Protocol — from DeFi gateways and block explorers to institutional
-              wallets and infrastructure.
+              Discover the best applications, tools, and protocols built on the
+              Internet Computer ecosystem — from DeFi exchanges and block
+              explorers to community wallets and developer infrastructure.
             </p>
 
             {/* Stats badge */}
@@ -703,7 +689,7 @@ export default function FeaturedAppsPage() {
           </div>
         </section>
 
-        {/* ── CantonLoop CTA Banner ── */}
+        {/* ── ICP Dashboard CTA Banner ── */}
         <section className="identity-section relative">
           <div className="identity-section-divider" />
           <div className="max-w-3xl mx-auto px-6 lg:px-8">
@@ -714,25 +700,25 @@ export default function FeaturedAppsPage() {
                   <Sparkles className="w-6 h-6 fa-cta-icon" />
                 </div>
                 <h2 className="identity-section-title mb-3">
-                  Explore More on CantonLoop
+                  Explore More on Internet Computer
                 </h2>
                 <p className="identity-section-subtitle mb-8 max-w-xl mx-auto">
-                  CantonLoop's Lighthouse is the official app discovery hub for
-                  the Canton Network ecosystem. Browse the full catalogue of
-                  featured dApps and integrations.
+                  The ICP Dashboard is the official analytics and explorer hub
+                  for the Internet Computer ecosystem. Monitor network stats,
+                  canister activity, and governance data.
                 </p>
                 <a
-                  href="https://lighthouse.cantonloop.com/featured-apps"
+                  href="https://dashboard.internetcomputer.org"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="fa-cta-btn"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Open Lighthouse on CantonLoop
+                  Open ICP Dashboard
                   <ArrowRight className="w-4 h-4" />
                 </a>
                 <p className="fa-cta-note mt-4">
-                  lighthouse.cantonloop.com/featured-apps
+                  dashboard.internetcomputer.org
                 </p>
               </div>
             </div>

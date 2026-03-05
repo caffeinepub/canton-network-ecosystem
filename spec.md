@@ -1,29 +1,53 @@
 # ICP Protocol Hub
 
 ## Current State
-The `/markets` page displays hardcoded sample markets (SAMPLE_MARKETS array with 8 static entries). The MarketDetailPage also uses a SAMPLE_MARKETS_MAP fallback. The UnhedgedBetPanel on the detail page allows placing external bets via the Unhedged API using a hardcoded API key.
+
+Multi-page ICP ecosystem hub with the following pages:
+- `/` – Canton-Compatible Identity & Wallet Prototype (Ed25519 keypair generator)
+- `/ecosystem` – Exchange & Wallet directory for ICP/Canton ecosystem
+- `/wallet` – Send/receive ICP wallet with CantonScan links
+- `/integration` – Splice Wallet Kernel integration guide
+- `/developer` – Developer docs with code snippets
+- `/featured-apps` – Featured ICP ecosystem apps
+- `/markets` – Prediction markets using Unhedged API
+- `/markets/:id` – Market detail with External Bet panel
+- `/leaderboard` – Leaderboard page
+- `/staking` – ICP Staking guide with dissolve delay table
 
 ## Requested Changes (Diff)
 
 ### Add
-- Fetch real markets from the Unhedged API (`https://unhedged.gg/api/v1/markets`) using the existing API key (`ak_MGZbA18VEeXakyPlrlcmPZgjiGNbnfuYBXTjZIBGbM7vqKaf`) on the MarketsPage
-- Loading state while fetching markets from Unhedged
-- Error state if fetch fails with a retry button
-- Map Unhedged API market format to the display format used by MarketCard
+- New page `/launchpad` mirroring features from https://nns.ic0.app/launchpad/
+  - **Hero section**: Headline "ICP SNS Launchpad", subheadline about decentralized token sales via SNS
+  - **Stats bar**: Total projects launched, total ICP raised, total participants (mock numbers)
+  - **Tab filter**: All / Open / Committed / Adopted / Failed – filters the SNS project list
+  - **SNS Project Cards**: Grid of SNS project cards, each showing:
+    - Project logo, name, description
+    - Status badge (Open / Committed / Adopted / Failed / Pending)
+    - Sale progress bar (ICP raised / ICP goal)
+    - Participants count
+    - Time remaining / end date
+    - Min/max contribution in ICP
+    - "Participate" button (links to nns.ic0.app/launchpad for real action)
+  - **Project Detail Modal**: clicking a card opens a modal with full details:
+    - Full description
+    - Token info (symbol, total supply, % distributed in sale)
+    - Neurons fund participation toggle info
+    - Timeline (proposal → open → committed → adopted)
+    - Link to NNS proposal & official site
+  - **How It Works section**: 4 steps explaining SNS token sale process
+  - **FAQ section**: Common questions about SNS participation
+  - Nav link "Launchpad" added to all page navbars
 
 ### Modify
-- MarketsPage: Replace SAMPLE_MARKETS with live data fetched from Unhedged API on component mount; keep search and category filter working on top of the fetched data
-- MarketCard: Support Unhedged market data shape (title, description, category, probability/volume fields from Unhedged format); adapt helpers to handle the API response shape
-- Keep the backend ICP markets as secondary source if Unhedged fetch fails (graceful fallback)
+- `App.tsx` – register `/launchpad` route
+- All page NavBar components – add "Launchpad" link
 
 ### Remove
-- SAMPLE_MARKETS static array from MarketsPage (no longer needed as primary source)
-- SAMPLE_MARKETS_MAP from MarketDetailPage is kept as last-resort fallback only
+- Nothing removed
 
 ## Implementation Plan
-1. In MarketsPage, add a `useEffect` (or React Query `useQuery`) that calls `GET https://unhedged.gg/api/v1/markets` with `Authorization: Bearer ak_MGZbA18VEeXakyPlrlcmPZgjiGNbnfuYBXTjZIBGbM7vqKaf`
-2. Adapt the fetched data to the existing Market display interface used by MarketCard (map `id`, `title`, `description`, `category`, probability/pool fields)
-3. Show loading skeleton cards while fetching
-4. Show an error banner with retry if the API call fails
-5. Keep category filter and search working on top of fetched markets
-6. Keep stat counters (Active Markets, Total Liquidity) driven by fetched data
+
+1. Create `src/frontend/src/pages/LaunchpadPage.tsx` with all sections
+2. Register route in `App.tsx`
+3. Add "Launchpad" nav link to NavBar in `StakingPage.tsx` and other pages that have independent NavBar components

@@ -289,6 +289,7 @@ function MarketsNavBar() {
             {[
               { label: "Identity", href: "/" },
               { label: "Markets", href: "/markets" },
+              { label: "Launchpad", href: "/launchpad" },
               { label: "Leaderboard", href: "/leaderboard" },
               { label: "Wallet", href: "/wallet" },
               { label: "Ecosystem", href: "/ecosystem" },
@@ -297,6 +298,7 @@ function MarketsNavBar() {
                 key={link.href}
                 href={link.href}
                 className={`identity-nav-link ${link.href === "/markets" ? "markets-nav-active" : ""}`}
+                data-ocid={`nav.${link.label.toLowerCase().replace(/\s+/g, "_")}.link`}
               >
                 {link.label}
               </a>
@@ -612,6 +614,24 @@ export default function MarketsPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const pendingCreate = useRef(false);
+
+  // Auto-open create modal after login if user clicked "Create Market" while logged out
+  useEffect(() => {
+    if (identity && pendingCreate.current) {
+      pendingCreate.current = false;
+      setCreateOpen(true);
+    }
+  }, [identity]);
+
+  function handleCreateClick() {
+    if (identity) {
+      setCreateOpen(true);
+    } else {
+      pendingCreate.current = true;
+      login();
+    }
+  }
 
   // Unhedged API state
   const [unhedgedMarkets, setUnhedgedMarkets] = useState<Market[]>([]);
@@ -709,7 +729,7 @@ export default function MarketsPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
           <div className="markets-hero-eyebrow mb-6 animate-fade-in-down inline-flex">
             <TrendingUp className="w-3.5 h-3.5" />
-            Prediction Markets · Powered by Unhedged
+            Prediction Markets · Powered by ICP
           </div>
 
           <h1 className="markets-hero-headline animate-fade-in-up">
@@ -814,30 +834,20 @@ export default function MarketsPage() {
                   className="markets-search-input"
                 />
               </div>
-              {identity ? (
-                <button
-                  type="button"
-                  onClick={() => setCreateOpen(true)}
-                  className="markets-create-btn"
-                >
+              <button
+                type="button"
+                onClick={handleCreateClick}
+                disabled={isLoggingIn}
+                className="markets-create-btn"
+                data-ocid="markets.create_market.button"
+              >
+                {isLoggingIn ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
                   <Plus className="w-4 h-4" />
-                  Create Market
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={login}
-                  disabled={isLoggingIn}
-                  className="markets-create-btn"
-                >
-                  {isLoggingIn ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Plus className="w-4 h-4" />
-                  )}
-                  Login to Create
-                </button>
-              )}
+                )}
+                Create Market
+              </button>
             </div>
           </div>
 
@@ -873,16 +883,20 @@ export default function MarketsPage() {
                   ? `No markets match "${searchQuery}"`
                   : `No ${activeCategory} markets available yet.`}
               </p>
-              {identity && (
-                <button
-                  type="button"
-                  onClick={() => setCreateOpen(true)}
-                  className="markets-create-btn mt-4"
-                >
+              <button
+                type="button"
+                onClick={handleCreateClick}
+                disabled={isLoggingIn}
+                className="markets-create-btn mt-4"
+                data-ocid="markets.empty_state.create_market.button"
+              >
+                {isLoggingIn ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
                   <Plus className="w-4 h-4" />
-                  Create First Market
-                </button>
-              )}
+                )}
+                Create Market
+              </button>
             </div>
           )}
         </div>
